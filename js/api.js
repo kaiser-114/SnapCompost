@@ -42,7 +42,12 @@ export function buatApi(sb) {
   return {
     // Baca (status selalu lewat VIEW, bukan kolom mentah)
     daftarWadah: () => baca(sb.from('wadah_status_efektif').select('*')),
-    wadah: id => baca(sb.from('wadah_status_efektif').select('*').eq('id', id).single()),
+    // maybeSingle: wadah yang sudah dihapus (mis. banner HP lama ditekan) → pesan ramah, bukan error generik
+    wadah: async id => {
+      const w = await baca(sb.from('wadah_status_efektif').select('*').eq('id', id).maybeSingle());
+      if (!w) throw new Error('Wadah tidak ditemukan. Mungkin sudah dihapus.');
+      return w;
+    },
     // Urutan tetap (item_wadah.dibuat_pada, lalu id): UPDATE memindahkan baris secara fisik, tanpa ORDER daftar bisa melompat.
     itemWadah: id => baca(sb.from('item_wadah').select('*').eq('id_wadah', id).order('dibuat_pada').order('id')),
 

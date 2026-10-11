@@ -201,7 +201,12 @@ export function teksBahan(kunci) {
 }
 
 // ---------- §8 Jadwal & progress (tanggal kalender WIB) ----------
-export const hariIniWIB = () => new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Jakarta' });
+// formatToParts: tidak bergantung pada bentuk string locale (WebView lama bisa memberi format lain dari YYYY-MM-DD)
+export const hariIniWIB = () => {
+  const p = Object.fromEntries(new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Jakarta', year: 'numeric', month: '2-digit', day: '2-digit' })
+    .formatToParts(new Date()).map(x => [x.type, x.value]));
+  return `${p.year}-${p.month}-${p.day}`;
+};
 const hari = iso => { const [y, m, d] = iso.split('-').map(Number); return Date.UTC(y, m - 1, d) / 864e5; };
 export const selisihHari = (a, b) => hari(a) - hari(b);
 export const tambahHari = (iso, n) => new Date((hari(iso) + n) * 864e5).toISOString().slice(0, 10);
@@ -217,6 +222,14 @@ export function hitungJadwal(namaResep, mulai = hariIniWIB()) {
     pesan_pemantauan: p.pesan_pemantauan,
     tanggal_pemantauan_berikutnya: p.interval_pemantauan_hari != null ? tambahHari(mulai, p.interval_pemantauan_hari) : null,
   };
+}
+// Bandingkan jadwal yang DIPAKAI SERVER (hasil RPC mulai_fermentasi) dengan JSON. Mengembalikan daftar kunci yang berbeda, atau null bila sama.
+// null juga bila RPC belum mengembalikan jadwal (SQL lama). UI: tampilkan peringatan bila hasilnya bukan null.
+export function jadwalMenyimpang(hasilServer, namaResep) {
+  if (hasilServer?.estimasi_durasi_hari === undefined) return null;
+  const j = hitungJadwal(namaResep);
+  const beda = ['estimasi_durasi_hari', 'interval_pemantauan_hari', 'durasi_pemantauan_aktif_hari'].filter(k => hasilServer[k] !== j[k]);
+  return beda.length ? beda : null;
 }
 export const statusEfektif = (w, hariIni = hariIniWIB()) =>
   w.status === 'sedang_fermentasi' && w.tanggal_matang <= hariIni ? 'matang' : w.status;

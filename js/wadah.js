@@ -31,6 +31,8 @@ export function dashboard(list, hariIni) {
   }
   return { totalAktif: n.mengisi + n.proses + n.matang, ...n };
 }
+// Teks lengkap untuk Home: di bawah 100 g tampil dalam gram (mis. hanya cangkang telur), supaya tidak muncul "0,0 kg".
+export const teksTotalSampah = gram => gram < 100 ? `${Math.round(gram).toLocaleString('id-ID')} g` : `${teksTotalKg(gram)} kg`;
 export const teksTotalKg = gram => (gram / 1000).toLocaleString('id-ID', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
 
 // Home: 1 tahap. ASUMSI: matang (butuh aksi) → proses → mengisi, lalu terbaru dulu. Ubah RANK bila maksudnya beda.
@@ -47,7 +49,7 @@ export function daftarHomepage(list, hariIni, urut = 'progress_tinggi') {
 export function filterDanUrut(list, { status = 'aktif', jenis = 'semua', urut = 'progress_tinggi' } = {}, hariIni) {
   const ok = list.filter(w => {
     if ((status === 'aktif') === (efektif(w, hariIni) === 'sudah_dipanen')) return false;
-    if (jenis === 'kompos') return w.nama_resep.startsWith('kompos');
+    if (jenis === 'kompos') return w.nama_resep?.startsWith('kompos') ?? false;   // nama_resep nullable di skema
     if (jenis === 'eco_enzyme') return w.nama_resep === 'eco_enzyme';
     return true;
   });
