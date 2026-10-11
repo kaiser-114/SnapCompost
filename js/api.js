@@ -43,7 +43,8 @@ export function buatApi(sb) {
     // Baca (status selalu lewat VIEW, bukan kolom mentah)
     daftarWadah: () => baca(sb.from('wadah_status_efektif').select('*')),
     wadah: id => baca(sb.from('wadah_status_efektif').select('*').eq('id', id).single()),
-    itemWadah: id => baca(sb.from('item_wadah').select('*').eq('id_wadah', id)),
+    // Urutan tetap (item_wadah.dibuat_pada, lalu id): UPDATE memindahkan baris secara fisik, tanpa ORDER daftar bisa melompat.
+    itemWadah: id => baca(sb.from('item_wadah').select('*').eq('id_wadah', id).order('dibuat_pada').order('id')),
 
     // maybeSingle() agar tidak crash saat login pertama (trigger saat_user_baru belum selesai)
     profil: async () => {
@@ -71,11 +72,7 @@ export function buatApi(sb) {
     mulaiFermentasi: p => rpc('mulai_fermentasi', p),
 
     // Tulis satu pernyataan (atomik) — wajib mengenai ≥1 baris
-    // checklist hanya boleh diubah saat 'sedang_mengisi' (di mode proses/matang checklist hanya daftar baca)
-    // DEPRECATED: menimpa seluruh checklist (last-write-wins). Dipertahankan agar kode lama tidak patah; pakai centangChecklist.
-    toggleChecklist: (id, checklist) => ubahBaris(
-      sb.from('wadah').update({ checklist_pending: checklist }).eq('id', id).eq('status', 'sedang_mengisi'),
-      'Wadah sudah tidak bisa diubah. Muat ulang halaman.'),
+    // (toggleChecklist yang menimpa seluruh checklist sudah DIHAPUS: pakai centangChecklist di bawah, yang mengubah satu kunci di server.)
     gantiNama: async (id, nama) => {   // async: validasi gagal = promise ditolak, konsisten dengan method lain
       const n = String(nama ?? '').trim();
       if (!n) throw new Error('Nama wadah tidak boleh kosong.');

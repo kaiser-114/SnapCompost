@@ -66,6 +66,8 @@ export function buatSesiAlokasi(batch, wadahList) {
 }
 
 // §7.4 — payload tambah_item_ke_wadah. itemLama[i] = { nama_sampah, berat }
+// Server menggabung label yang sudah ada di wadah (berat dijumlahkan, kondisi digabung); checklist di sini tetap benar karena
+// HitungBahanPendukung linear terhadap berat per kategori, jadi hasilnya sama dengan atau tanpa penggabungan.
 // idTetap(kunci) opsional: dari sesi.idTetap agar id stabil saat retry. sampahBaru[i].id_entri dipakai sebagai kunci.
 export function rencanaTambahKeWadah(wadah, itemLama, sampahBaru, idTetap = () => uuid()) {
   if (statusW(wadah) !== 'sedang_mengisi') throw new Error('Wadah sudah fermentasi, tidak bisa ditambah sampah baru');
@@ -87,6 +89,9 @@ export function rencanaWadahBaru(namaResep, batchSisa, idTetap = () => uuid()) {
 // Langkah 5–6: susun seluruh rencana. itemLamaPer = { id_wadah: [item dari item_wadah] }.
 // Panggil dulu tanpa resepDipilih → baca opsiResep & perluPilihResep; setelah user memilih, panggil lagi dengan resepDipilih.
 // Aman dipanggil berulang (retry): selama alokasi tidak berubah, id yang dihasilkan sama.
+// itemLamaPer WAJIB memuat SETIAP wadah yang menerima tambahan (boleh [] bila wadah memang kosong); bila tidak, melempar Error
+// (sebelumnya dianggap [] → checklist salah tanpa pesan). resepDipilih yang sudah tidak valid (alokasi berubah) dianggap belum memilih:
+// lihat `perluPilihResep` dan `resepDipakai`. Error lain dari fungsi murni ini (mis. payloadKonfirmasi) harus ditangkap UI dengan try/catch.
 // [PATCH #6] sisaTidakBisaDiproses = ada sisa bahan tetapi tidak ada resep yang cocok untuk gabungan sisa itu
 // (mis. sisa berisi bahan yang hanya cocok kompos + bahan yang hanya cocok eco_enzyme). Tanpa penanda ini sisa hilang diam-diam.
 // UI: tampilkan `penghalang`, minta user mengalokasikan ulang / mengeluarkan bahan; tombol Konfirmasi hanya aktif bila bisaKonfirmasi.
@@ -94,11 +99,12 @@ export function susunRencana(sesi, itemLamaPer, resepDipilih = null) {
   const tambah = [];
   for (const [idW, per] of Object.entries(sesi.alokasi())) {
     const wadah = sesi.kandidat.find(k => k.wadah.id === idW).wadah;
+    if (!Object.hasOwn(itemLamaPer ?? {}, idW)) throw new Error(`Isi wadah ${idW} belum dimuat. Muat ulang halaman.`);
     const daftar = Object.entries(per).filter(([, g]) => g > 0).map(([idE, g]) => {
       const e = sesi.pool.get(idE);
       return { id_entri: idE, nama_sampah: e.nama_sampah, berat_gram: g, kondisi_tercentang: e.kondisi_tercentang };
     });
-    if (daftar.length) tambah.push(rencanaTambahKeWadah(wadah, itemLamaPer[idW] ?? [], daftar, sesi.idTetap));
+    if (daftar.length) tambah.push(rencanaTambahKeWadah(wadah, itemLamaPer[idW], daftar, sesi.idTetap));
   }
   const sisa = sesi.batchSisa();
   const opsiResep = sisa.length ? C.penentuanResep(sisa) : [];
@@ -108,13 +114,14 @@ export function susunRencana(sesi, itemLamaPer, resepDipilih = null) {
     ? C.ref().resep.map(r => ({ resep: r.nama, label: r.label_tampilan,
         bahan: sisa.filter(e => C.dapatkanStatus(e, r.nama) === 'excluded').map(label) }))
     : [];
-  const perluPilihResep = sisa.length > 0 && !sisaTidakBisaDiproses && !resepDipilih;
+  const resepDipakai = resepDipilih && opsiResep.includes(resepDipilih) ? resepDipilih : null; // pilihan basi (alokasi berubah) = belum memilih
+  const perluPilihResep = sisa.length > 0 && !sisaTidakBisaDiproses && !resepDipakai;
   return {
     tambah, batchSisa: sisa,
     opsiResep,                                               // default terpilih = opsi pertama
-    perluPilihResep, sisaTidakBisaDiproses, penghalang,
+    perluPilihResep, resepDipakai, sisaTidakBisaDiproses, penghalang,          // resepDipakai null padahal UI memilih → reset pilihan di UI
     bisaKonfirmasi: !sisaTidakBisaDiproses && !perluPilihResep,
-    wadah_baru: sisa.length && resepDipilih && !sisaTidakBisaDiproses ? rencanaWadahBaru(resepDipilih, sisa, sesi.idTetap) : null,
+    wadah_baru: sisa.length && resepDipakai && !sisaTidakBisaDiproses ? rencanaWadahBaru(resepDipakai, sisa, sesi.idTetap) : null,
   };
 }
 
