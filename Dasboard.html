@@ -55,39 +55,6 @@
       box-shadow: 0 12px 50px rgb(27 55 37 / 10%);
     }
 
-    .status-bar {
-      position: relative;
-      display: flex;
-      flex: 0 0 29px;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 23px 0 24px;
-      font-size: 9px;
-      font-weight: 700;
-      letter-spacing: -.15px;
-    }
-
-    .notch {
-      position: absolute;
-      top: 0;
-      left: 50%;
-      width: 72px;
-      height: 17px;
-      transform: translateX(-50%);
-      border-radius: 0 0 12px 12px;
-      background: #101411;
-    }
-
-    .status-icons {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-
-    .status-icons svg {
-      display: block;
-    }
-
     .app-header {
       display: flex;
       min-height: 47px;
@@ -171,7 +138,7 @@
     .notification-layer {
       position: absolute;
       z-index: 8;
-      inset: 76px 0 0;
+      inset: 47px 0 0;
     }
 
     .notification-layer[hidden] {
@@ -802,12 +769,6 @@
       text-align: center;
     }
 
-    .phone[data-workflow="camera"] .status-bar {
-      z-index: 14;
-      background: #090e0b;
-      color: #fff;
-    }
-
     .phone[data-workflow="camera"] .app-header,
     .phone[data-workflow="camera"] main,
     .phone[data-workflow="camera"] .wadah-view,
@@ -882,7 +843,7 @@
     .workflow-view {
       position: absolute;
       z-index: 12;
-      inset: 29px 0 0;
+      inset: 0;
       overflow: hidden;
       background: #f2f8f3;
     }
@@ -2340,22 +2301,6 @@
 </head>
 <body>
   <div class="phone" data-screen="home">
-    <div class="status-bar" aria-label="Status ponsel">
-      <span>9:41</span>
-      <span class="notch" aria-hidden="true"></span>
-      <span class="status-icons" aria-hidden="true">
-        <span style="font-size:8px;font-weight:600">5G</span>
-        <svg width="13" height="10" viewBox="0 0 16 12" fill="none">
-          <path d="M1 4.2C4.9.7 11.1.7 15 4.2M3.6 6.8c2.5-2.2 6.3-2.2 8.8 0M6.3 9.3c1-.9 2.4-.9 3.4 0" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
-        </svg>
-        <svg width="17" height="10" viewBox="0 0 20 12" fill="none">
-          <rect x=".7" y=".7" width="16" height="10.6" rx="2" stroke="currentColor" stroke-width="1.2"/>
-          <path d="M18 4v4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-          <rect x="2.5" y="2.5" width="12.5" height="7" rx="1" fill="currentColor"/>
-        </svg>
-      </span>
-    </div>
-
     <header class="app-header">
       <div class="brand">
         <svg class="brand-home-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
