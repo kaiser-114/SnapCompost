@@ -89,6 +89,10 @@ export function rencanaWadahBaru(namaResep, batchSisa, idTetap = () => uuid()) {
 // Langkah 5–6: susun seluruh rencana. itemLamaPer = { id_wadah: [item dari item_wadah] }.
 // Panggil dulu tanpa resepDipilih → baca opsiResep & perluPilihResep; setelah user memilih, panggil lagi dengan resepDipilih.
 // Aman dipanggil berulang (retry): selama alokasi tidak berubah, id yang dihasilkan sama.
+// [KONTRAK RETRY — UI] (1) Retry setelah timeout WAJIB mengirim ulang payload yang SAMA PERSIS (objek yang sama dari susunRencana/payloadKonfirmasi),
+//   bukan menyusun rencana baru dari data yang dimuat ulang: server melewati item yang id-nya sudah tercatat (item_masuk) tetapi tetap menimpa
+//   checklist_pending dengan checklist kiriman klien; rencana baru dari itemLama yang sudah memuat item itu akan menghitung bobotnya DUA KALI.
+//   (2) Setelah konfirmasi SUKSES, buang sesi alokasi (buatSesiAlokasi baru bila perlu): id yang sama akan dilewati diam-diam oleh server.
 // itemLamaPer WAJIB memuat SETIAP wadah yang menerima tambahan (boleh [] bila wadah memang kosong); bila tidak, melempar Error
 // (sebelumnya dianggap [] → checklist salah tanpa pesan). resepDipilih yang sudah tidak valid (alokasi berubah) dianggap belum memilih:
 // lihat `perluPilihResep` dan `resepDipakai`. Error lain dari fungsi murni ini (mis. payloadKonfirmasi) harus ditangkap UI dengan try/catch.
@@ -131,4 +135,41 @@ export function payloadKonfirmasi(rencana) {
   if (rencana.sisaTidakBisaDiproses) throw new Error('Masih ada sisa bahan yang tidak cocok untuk resep mana pun. Alokasikan ulang ke wadah yang ada atau keluarkan bahan tersebut.');
   if (rencana.perluPilihResep) throw new Error('Pilih resep untuk wadah baru terlebih dahulu.');
   return { tambah: rencana.tambah, wadah_baru: rencana.wadah_baru };
+}
+
+// Pembungkus pengiriman (M3). UI memanggil INI, bukan susunRencana + api.konfirmasiAlokasi langsung. Memaksa kontrak retry (§2.1):
+//  (1) payload disusun SEKALI (percobaan pertama) lalu dikirim ulang apa adanya saat retry; argumen itemLamaPer/resepDipilih pada retry diabaikan;
+//  (2) setelah sukses, sesi ditutup: kirimAlokasi lagi melempar, dan sesi.atur() menolak;
+//  (3) klik ganda saat masih berjalan mengembalikan promise yang sama (api dipanggil sekali);
+//  (4) selama ada percobaan yang hasilnya belum pasti (gagal/timeout), sesi.atur() ditolak, karena mengubah alokasi akan membuat id baru
+//      di atas item yang mungkin sudah tersimpan. Jalan keluar: kirim ulang, atau batalkanPending() setelah UI memuat ulang data wadah.
+// ponytail: state hidup di memori (WeakMap). Tab ditutup = sesi dan payload hilang. Upgrade: salin ke sessionStorage bila diperlukan.
+const kirim = new WeakMap(); // sesi → { payload, janji, selesai }
+
+export function kirimAlokasi(sesi, itemLamaPer, resepDipilih, api) {
+  let s = kirim.get(sesi);
+  if (s?.selesai) return Promise.reject(new Error('Alokasi ini sudah tersimpan. Mulai sesi baru.'));
+  if (s?.janji) return s.janji;
+  if (!s) {
+    try { s = { payload: payloadKonfirmasi(susunRencana(sesi, itemLamaPer, resepDipilih)), janji: null, selesai: false }; }
+    catch (e) { return Promise.reject(e); }                       // rencana belum boleh dikirim: tidak ada state yang dibuat
+    kirim.set(sesi, s);
+    const atur = sesi.atur;
+    sesi.atur = (...a) => {
+      const st = kirim.get(sesi);
+      if (!st) return atur(...a);                                  // setelah batalkanPending
+      return { ok: false, pesan: st.selesai ? 'Alokasi sudah tersimpan.' : 'Pengiriman sebelumnya belum terkonfirmasi. Kirim ulang atau muat ulang halaman.' };
+    };
+  }
+  const st = s;
+  st.janji = Promise.resolve().then(() => api.konfirmasiAlokasi(st.payload))
+    .then(hasil => { st.selesai = true; return hasil; })
+    .finally(() => { st.janji = null; });
+  return st.janji;
+}
+
+// Buang percobaan yang belum pasti. Panggil HANYA setelah UI memuat ulang isi wadah dari server (agar rencana baru dihitung dari data terkini).
+export function batalkanPending(sesi) {
+  const s = kirim.get(sesi);
+  if (s && !s.selesai && !s.janji) kirim.delete(sesi);
 }

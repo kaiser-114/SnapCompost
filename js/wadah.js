@@ -69,7 +69,7 @@ export function detailWadah(w, items, hariIni) {
   const p = s === 'sedang_mengisi' ? null : C.progress(w, hariIni);
   return {
     id: w.id, nama: w.nama, mode: s, resep: labelResep(w.nama_resep),
-    progressTeks: p && s !== 'sudah_dipanen' ? `hari ke-${p.hariKe} dari ${w.estimasi_durasi_hari} hari` : null,
+    progressTeks: p && s === 'sedang_fermentasi' ? `hari ke-${p.hariKe} dari ${w.estimasi_durasi_hari} hari` : null, // hanya 9b (proses); 9c (matang) tanpa progress
     // gram = tampilan baca (selalu gram). edit = cara mengedit: 'hitungan' → stepper butir (≈ nilai × gramPerSatuan g), 'berat_langsung' → ketik gram.
     items: items.map(i => {
       const m = ref.peta.get(i.nama_sampah), hit = m?.tipe_input === 'hitungan';
@@ -85,7 +85,7 @@ export function detailWadah(w, items, hariIni) {
       const b = C.teksBahan(kunci), sisa = C.sisaDituang(x), plus = !x.tercentang && (x.sudah_dituang || 0) > 0 && sisa > 0; // "+ X" hanya bila sudah ada yang dituang DAN masih ada sisa
       return { kunci, teks: b.teks, tercentang: x.tercentang, teksJumlah: plus ? `+ ${sisa} ${b.satuan}` : `${x.jumlah} ${b.satuan}` };
     }),
-    alat: ref.alat_modifikasi.filter(a => a.nama_resep === w.nama_resep),
+    alat: s === 'sedang_mengisi' ? ref.alat_modifikasi.filter(a => a.nama_resep === w.nama_resep) : [], // alat hanya di 9a
     langkah: ref.langkah_resep.filter(l => l.nama_resep === w.nama_resep).sort((a, b) => a.urutan - b.urutan).map(l => l.detail_langkah),
     tombol: {
       mulaiFermentasi: s === 'sedang_mengisi' && C.checklistLengkap(c),
@@ -116,8 +116,8 @@ export function rencanaCentang(w, kunci, hariIni) {
 export function rencanaMulaiFermentasi(w, hariIni = C.hariIniWIB()) {
   if (efektif(w, hariIni) !== 'sedang_mengisi') throw new Error('Wadah tidak dalam status sedang mengisi');
   if (!C.checklistLengkap(cl(w))) throw new Error('Checklist bahan pendukung belum lengkap');
-  return { id_wadah: w.id, status: 'sedang_fermentasi', tanggal_mulai_fermentasi: hariIni,
-    ...C.hitungJadwal(w.nama_resep, hariIni), notif_matang_terkirim: false };
+  // Server (mulai_fermentasi) hanya memakai id_wadah & pesan_pemantauan; status, jadwal, dan tanggal dihitung server (WIB).
+  return { id_wadah: w.id, pesan_pemantauan: C.hitungJadwal(w.nama_resep, hariIni).pesan_pemantauan };
 }
 
 // Hapus item (9a). perluDialogTerakhir=true → tampilkan dialog "Hapus Item & Wadah" / "Kembali" dulu.
