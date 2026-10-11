@@ -1,5 +1,7 @@
 // api.js — satu-satunya tempat yang menyentuh Supabase. Pakai: const api = buatApi(supabaseClient)
 // Aturan: tampilan diperbarui HANYA setelah promise berhasil; bila melempar Error, tampilkan error.message.
+import { hariIniWIB } from './core.js';
+
 export function buatApi(sb) {
   const online = () => { if (!navigator.onLine) throw new Error('Butuh internet'); };
 
@@ -86,6 +88,12 @@ export function buatApi(sb) {
     // Token notifikasi (FCM). daftarkan memindahkan kepemilikan bila token yang sama sebelumnya milik akun lain; lepas = saat logout.
     daftarkanPerangkat: token => rpc('daftarkan_perangkat', { fcm_token: token }),
     lepasPerangkat: token => rpc('lepas_perangkat', { fcm_token: token }),
+
+    // Notifikasi dalam aplikasi (03_notifikasi.sql). Ditulis HANYA oleh server (cron). "Dibaca" = dihapus; menghapus baris yang sudah
+    // tidak ada bukan error (mis. banner HP lama ditekan setelah notifikasinya sudah dibuka di aplikasi). Terbaru dulu, maks 100.
+    daftarNotifikasi: () => baca(sb.from('notifikasi').select('id, id_wadah, jenis, isi, dibuat_pada, wadah(nama, nama_resep)')
+      .order('dibuat_pada', { ascending: false }).order('id').limit(100)),
+    hapusNotifikasi: id => tulis(sb.from('notifikasi').delete().eq('id', id)),
 
     // Transisi status lewat RPC (tanggal & status diperiksa di server)
     batalkanFermentasi: id => rpc('batalkan_fermentasi', { id_wadah: id }),
