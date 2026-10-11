@@ -65,9 +65,7 @@ export function filterDanUrut(list, { status = 'aktif', jenis = 'semua', urut = 
 // Detail wadah (9a/9b/9c). items = baris item_wadah milik wadah ini.
 export function detailWadah(w, items, hariIni) {
   const s = efektif(w, hariIni), ref = C.ref(), c = cl(w);
-  // Label yang sama bisa muncul di >1 baris (kondisi tiap baris berbeda) → beri nomor agar tidak membingungkan: "Apel (1)", "Apel (2)"
-  const total = {}, urut = {};
-  items.forEach(i => { total[i.nama_sampah] = (total[i.nama_sampah] || 0) + 1; });
+  // Satu label = satu baris per wadah (server menjumlahkan penambahan label yang sama: private._gabung_item), jadi tidak perlu penomoran.
   const p = s === 'sedang_mengisi' ? null : C.progress(w, hariIni);
   return {
     id: w.id, nama: w.nama, mode: s, resep: labelResep(w.nama_resep),
@@ -77,7 +75,7 @@ export function detailWadah(w, items, hariIni) {
       const m = ref.peta.get(i.nama_sampah), hit = m?.tipe_input === 'hitungan';
       const label = m?.label_tampilan ?? i.nama_sampah;
       return { id: i.id, nama: i.nama_sampah, label, kondisi: i.kondisi_tercentang ?? [],
-        labelTampil: total[i.nama_sampah] > 1 ? `${label} (${urut[i.nama_sampah] = (urut[i.nama_sampah] || 0) + 1})` : label,
+        labelTampil: label,                                   // dipertahankan agar UI lama tidak patah
         gram: i.berat, bisaEdit: s === 'sedang_mengisi',
         edit: hit ? { tipe: 'hitungan', satuan: 'butir', nilai: Math.round(i.berat / m.berat_per_satuan), gramPerSatuan: m.berat_per_satuan }
                   : { tipe: 'berat_langsung', satuan: 'g', nilai: i.berat } };

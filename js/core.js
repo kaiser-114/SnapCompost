@@ -8,7 +8,7 @@ const KAT_SEMUA = [...KAT_S, 'mineral_terpisah'];                               
 let REF = null;
 
 // ---------- Referensi + validasi (§9.1, §12.1) ----------
-// Jadwal yang HARUS sama dengan blok CASE di mulai_fermentasi (03_patch_keamanan.sql): [durasi, interval, pemantauan aktif].
+// Jadwal yang HARUS sama dengan blok CASE di mulai_fermentasi (02_rpc.sql): [durasi, interval, pemantauan aktif].
 // Server memakai angka ini; JSON yang berbeda akan ditolak saat aplikasi dimuat (cegah jadwal tampilan ≠ jadwal server).
 export const JADWAL_SERVER = { kompos: [42, 4, 35], kompos_kering: [42, 7, 35], eco_enzyme: [90, 2, 30] };
 const NILAI_STATUS = ['full', 'excluded'];
