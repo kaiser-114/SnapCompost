@@ -1,0 +1,494 @@
+/* Detail wadah — status "Sedang mengisi". Nilai diambil dari index.css Figma (frame 390px).
+   Semua kelas berawalan .vf- agar tidak bentrok dengan vessel-detail.css lama. Muat SETELAH vessel-detail.css dan workflow-common.css. */
+
+.workflow-screen[data-workflow-screen="vessel-detail"] {
+  position: relative;               /* tempat dialog (bottom sheet) menempel */
+  background: #f4f8f2;
+  font-family: "Nunito", system-ui, sans-serif;
+}
+
+/* ---- Header: 65px, putih 90% + blur, tombol back 36px ---- */
+.workflow-screen[data-workflow-screen="vessel-detail"] .workflow-header {
+  min-height: 65px;
+  flex: 0 0 65px;
+  gap: 12px;
+  padding: 14px 20px;
+  border-bottom: .7px solid #e8f5ee;
+  background: rgb(255 255 255 / 90%);
+  backdrop-filter: blur(8px);
+  color: #1a2e1f;
+}
+
+.workflow-screen[data-workflow-screen="vessel-detail"] .workflow-back {
+  width: 36px;
+  height: 36px;
+  flex-basis: 36px;
+  background: #f4f8f2;
+  color: #1a2e1f;
+}
+
+.workflow-screen[data-workflow-screen="vessel-detail"] .workflow-back svg { width: 20px; height: 20px; }
+
+.workflow-screen[data-workflow-screen="vessel-detail"] .workflow-header h2 {
+  overflow: hidden;
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: 0;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ---- Isi bergulir (padding 20px, jarak antar kartu 16px) ---- */
+.workflow-screen[data-workflow-screen="vessel-detail"] #vessel-detail-content {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px 20px 24px;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+/* Kartu tidak boleh menyusut: kartu ber-overflow:hidden akan diciutkan ke tinggi 0 di container bertinggi tetap */
+.workflow-screen[data-workflow-screen="vessel-detail"] #vessel-detail-content > * { flex: 0 0 auto; }
+
+/* Tombol aksi di luar area gulir: posisinya tidak berubah saat halaman di-scroll */
+.workflow-screen[data-workflow-screen="vessel-detail"] #vessel-detail-actions {
+  flex: 0 0 auto;
+  padding: 12px 20px calc(20px + env(safe-area-inset-bottom, 0px));
+  background: linear-gradient(to top, #f4f8f2 78%, rgb(244 248 242 / 0%));
+}
+
+/* ---- Kartu dasar ---- */
+.vf-card {
+  padding: 16px;
+  border: .7px solid #e8f5ee;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 1px 2px -1px rgb(0 0 0 / 10%), 0 1px 3px rgb(0 0 0 / 10%);
+  color: #1a2e1f;
+}
+
+.vf-card-flush { padding: 0; overflow: hidden; }
+
+.vf-kicker {
+  margin: 0;
+  color: #6b8570;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: .55px;
+  line-height: 16.5px;
+  text-transform: uppercase;
+}
+
+.vf-empty { margin: 0; padding: 16px; color: #6b8570; font-size: 12px; font-weight: 600; line-height: 18px; }
+
+/* Header kartu dengan garis hijau di bawahnya */
+.vf-card-head {
+  display: flex;
+  min-height: 49px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 12px 16px;
+  border-bottom: 1px solid #2d7a4f;
+}
+
+.vf-head-left { display: flex; min-width: 0; align-items: center; gap: 8px; }
+.vf-head-icon { font-size: 16px; line-height: 24px; }
+
+/* Header kartu sampah: judul + tombol edit */
+.vf-card-flush > .vf-card-head:first-child { padding: 15px 16px; }
+
+.vf-chip {
+  flex: 0 0 auto;
+  padding: 2px 8px;
+  border: 0;
+  border-radius: 999px;
+  background: #fef3c7;
+  color: #92400e;
+  font: 800 10px/15px "Nunito", system-ui, sans-serif;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.vf-chip.static { background: #f4f8f2; color: #6b8570; text-transform: none; cursor: default; }
+.vf-chip-edit[aria-pressed="true"] { background: #f4a535; color: #fff; }
+
+.vf-chip:focus-visible,
+.vf-check:focus-visible,
+.vf-btn:focus-visible,
+.vf-start:focus-visible,
+.vf-delete:focus-visible,
+.vf-item-input:focus-visible { outline: 2px solid #2d7a4f; outline-offset: 2px; }
+
+.vf-body { padding: 16px; }
+
+/* ---- Kartu status ---- */
+.vf-hero {
+  display: grid;
+  justify-items: center;
+  gap: 0;
+  padding: 20px 20px 16px;
+  text-align: center;
+}
+
+.vf-pill {
+  margin-bottom: 12px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #fef3c7;
+  color: #92400e;
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 15px;
+}
+
+.vf-hero-icon { font-size: 48px; line-height: 48px; }
+.vf-hero-title { margin: 14px 0 0; color: #f4a535; font-size: 15px; font-weight: 800; line-height: 22.5px; }
+.vf-hero-sub   { margin: 2px 0 0; color: #6b8570; font-size: 14px; font-weight: 400; line-height: 20px; }
+
+/* ---- Resep ---- */
+.vf-recipe-row { display: flex; align-items: center; gap: 12px; margin-top: 12px; }
+
+.vf-tile {
+  display: grid;
+  width: 40px;
+  height: 40px;
+  flex: 0 0 40px;
+  place-items: center;
+  border-radius: 20px;
+  background: #e8f5ee;
+  font-size: 20px;
+  line-height: 28px;
+}
+
+.vf-recipe-info { display: grid; min-width: 0; }
+.vf-recipe-name { font-size: 16px; font-weight: 800; line-height: 24px; }
+.vf-recipe-duration { color: #6b8570; font-size: 11px; font-weight: 600; line-height: 16.5px; }
+.vf-recipe-duration b { font-weight: 800; }
+
+.vf-recipe-detail {
+  display: grid;
+  gap: 2px;
+  margin: 14px 0 0;
+  padding-top: 12px;
+  border-top: .7px solid #e8f5ee;
+}
+
+.vf-recipe-detail dt { margin-top: 8px; color: #6b8570; font-size: 11px; font-weight: 800; line-height: 16.5px; }
+.vf-recipe-detail dt:first-child { margin-top: 0; }
+.vf-recipe-detail dd { margin: 0; font-size: 12px; font-weight: 600; line-height: 19.5px; }
+.vf-bullets { margin: 0; padding-left: 16px; }
+
+/* ---- Daftar sampah ---- */
+.vf-list { margin: 0; padding: 15px 0; list-style: none; }
+.vf-item { padding: 6px 16px; }
+.vf-item-row { display: flex; min-height: 20px; align-items: center; justify-content: space-between; gap: 8px; }
+.vf-item-name { color: #1a2e1f; font-size: 14px; font-weight: 600; line-height: 20px; }
+.vf-item-weight { color: #000; font-size: 14px; font-weight: 800; line-height: 20px; white-space: nowrap; }
+
+.vf-item-edit { display: inline-flex; align-items: center; gap: 6px; }
+
+.vf-item-input {
+  width: 88px;
+  height: 36px;
+  padding: 0 12px;
+  border: 2px solid #e8f5ee;
+  border-radius: 14px;
+  background: #fff;
+  color: #1a2e1f;
+  font: 800 14px/1 "Nunito", system-ui, sans-serif;
+  text-align: right;
+}
+
+.vf-item-input[aria-invalid="true"] { border-color: #fca5a5; }
+.vf-unit { min-width: 30px; color: #6b8570; font-size: 12px; font-weight: 700; }
+.vf-field-error { margin: 4px 0 0; color: #b91c1c; font-size: 11px; font-weight: 600; line-height: 16.5px; }
+.vf-field-error:empty { display: none; }
+
+/* ---- Checklist: pita kuning di atas, daftar putih di bawah ---- */
+.vf-band { padding: 10px 16px 9px; background: #fef3c7; color: #92400e; }
+.vf-band-title { margin: 0; font-size: 12px; font-weight: 800; letter-spacing: .3px; line-height: 18px; text-transform: uppercase; }
+.vf-band-sub { margin: 2px 0 0; color: rgb(146 64 14 / 70%); font-size: 11px; font-weight: 600; line-height: 16.5px; }
+
+.vf-checks { display: grid; gap: 8px; margin: 0; padding: 16px; list-style: none; }
+
+.vf-check {
+  display: flex;
+  width: 100%;
+  min-height: 52px;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border: 2px solid #e8f5ee;
+  border-radius: 20px;
+  background: #fff;
+  color: #1a2e1f;
+  font: 600 14px/21px "Nunito", system-ui, sans-serif;
+  text-align: left;
+  cursor: pointer;
+}
+
+.vf-check.done { border-color: rgb(45 122 79 / 30%); background: #f0fdf4; color: #2d7a4f; }
+
+.vf-check-box {
+  display: grid;
+  width: 24px;
+  height: 24px;
+  flex: 0 0 24px;
+  place-items: center;
+  border: 2px solid #c5d8c9;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.vf-check.done .vf-check-box { border-color: #2d7a4f; background: #2d7a4f; }
+.vf-check-label { min-width: 0; flex: 1; }
+.vf-check.done .vf-check-label { opacity: .7; text-decoration: line-through; }
+.vf-check-amount { color: #6b8570; font-size: 13px; font-weight: 400; line-height: 19.5px; white-space: nowrap; }
+.vf-check.done .vf-check-amount { color: #2d7a4f; }
+
+/* ---- Alat & langkah ---- */
+.vf-tool-title { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; font-size: 15px; font-weight: 800; line-height: 22.5px; }
+
+.vf-steps { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.vf-step { display: grid; grid-template-columns: 20px 1fr; gap: 10px; align-items: start; }
+.vf-step p { margin: 0; color: #1a2e1f; font-size: 12px; font-weight: 400; line-height: 19.5px; }
+
+.vf-step-no {
+  display: grid;
+  width: 20px;
+  height: 20px;
+  margin-top: 2px;
+  place-items: center;
+  border-radius: 50%;
+  background: #2d7a4f;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 15px;
+}
+
+/* Langkah pengolahan: lingkaran 34px dengan garis penghubung */
+.vf-steps-big { gap: 6px; }
+.vf-steps-big .vf-step { position: relative; grid-template-columns: 34px 1fr; gap: 12px; padding-bottom: 10px; }
+.vf-steps-big .vf-step-no { width: 34px; height: 34px; margin: 0; font-size: 13px; font-weight: 900; }
+
+.vf-steps-big .vf-step:not(:last-child)::before {
+  position: absolute;
+  top: 38px;
+  bottom: 2px;
+  left: 16px;
+  width: 2px;
+  border-radius: 2px;
+  background: #c5d8c9;
+  content: "";
+}
+
+.vf-step-body { display: grid; min-width: 0; gap: 8px; }
+.vf-step-top { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; min-height: 34px; }
+.vf-step-top strong { font-size: 13px; font-weight: 800; line-height: 19.5px; }
+
+.vf-tag { padding: 2px 8px; border-radius: 999px; background: #e8f5ee; color: #2d7a4f; font-size: 9px; font-weight: 400; line-height: 13.5px; }
+
+.vf-step-desc { padding: 12px; border-radius: 20px; background: #f0fdf4; color: rgb(26 46 31 / 80%) !important; }
+
+/* ---- Hapus wadah ---- */
+.vf-card-danger { border-width: 1.3px; }
+.vf-card-danger .vf-kicker { margin-bottom: 4px; }
+
+.vf-delete {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border: 1.3px solid #fca5a5;
+  border-radius: 20px;
+  background: #fee2e2;
+  color: #b91c1c;
+  font: 400 14px/20px "Nunito", system-ui, sans-serif;
+  text-align: left;
+  cursor: pointer;
+}
+
+.vf-delete-icon { font-size: 16px; line-height: 16px; }
+.vf-delete-text { display: grid; min-width: 0; }
+.vf-delete-text strong { font-weight: 800; }
+.vf-delete-text small { color: rgb(185 28 28 / 70%); font-size: 11px; font-weight: 600; line-height: 16.5px; }
+
+/* ---- Tombol Mulai Fermentasi (sticky di luar area gulir) ---- */
+.vf-start {
+  display: block;
+  width: 100%;
+  padding: 16px 0;
+  border: 0;
+  border-radius: 16px;
+  background: #2d7a4f;
+  color: #fff;
+  font: 800 15px/22.5px "Nunito", system-ui, sans-serif;
+  text-align: center;
+  cursor: pointer;
+}
+
+/* Belum lengkap: hijau pucat dan tidak bisa ditekan */
+.vf-start:disabled { background: #e8f5ee; color: #6b8570; cursor: not-allowed; }
+
+/* ---- Dialog (bottom sheet) ---- */
+.vf-sheet-layer {
+  position: absolute;
+  z-index: 30;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  background: rgb(26 46 31 / 55%);
+}
+
+.vf-sheet {
+  display: grid;
+  width: 100%;
+  gap: 14px;
+  padding: 20px 20px calc(20px + env(safe-area-inset-bottom, 0px));
+  border-radius: 24px 24px 0 0;
+  background: #fff;
+  color: #1a2e1f;
+}
+
+.vf-sheet-head { display: flex; align-items: center; gap: 12px; }
+
+.vf-sheet-icon {
+  display: grid;
+  width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
+  place-items: center;
+  border-radius: 14px;
+  background: #fef3c7;
+  font-size: 22px;
+}
+
+.vf-sheet-icon.danger { background: #fee2e2; }
+.vf-sheet-title { margin: 0; font-size: 17px; font-weight: 800; line-height: 24px; }
+.vf-sheet-note  { margin: 0; color: #6b8570; font-size: 12px; font-weight: 600; line-height: 18px; }
+
+.vf-sheet-body {
+  margin: 0;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: #fffbeb;
+  color: #92400e;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 19.5px;
+}
+
+.vf-sheet-body.danger { background: #fef2f2; color: #b91c1c; }
+.vf-sheet-actions { display: grid; grid-template-columns: 1fr 1.4fr; gap: 10px; }
+
+.vf-btn {
+  height: 48px;
+  border: 0;
+  border-radius: 16px;
+  font: 800 14px/1 "Nunito", system-ui, sans-serif;
+  cursor: pointer;
+}
+
+.vf-btn-soft    { background: #e8f5ee; color: #2d7a4f; }
+.vf-btn-primary { background: #2d7a4f; color: #fff; }
+.vf-btn-danger  { background: #dc2626; color: #fff; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .vf-sheet { animation: vf-naik .18s ease-out; }
+  @keyframes vf-naik { from { transform: translateY(24px); opacity: .6; } to { transform: none; opacity: 1; } }
+}
+
+/* ======== Status sedang fermentasi ======== */
+.vf-pill-proses { background: #dcfce7; color: #15803d; }
+
+.vf-proses { padding: 20px 20px 12px; }
+.vf-proses .vf-hero-icon { margin-top: 0; }
+.vf-day-number { margin: 10px 0 0; color: #2d7a4f; font-size: 48px; font-weight: 800; line-height: 48px; }
+.vf-proses .vf-hero-sub { margin-top: 6px; }
+
+.vf-bar { width: 100%; height: 8px; margin-top: 16px; overflow: hidden; border-radius: 999px; background: #e8f5ee; }
+.vf-bar-fill { display: block; height: 100%; border-radius: inherit; background: #2d7a4f; }
+
+.vf-estimate {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 12px 0 0;
+  padding-top: 0;
+  color: #6b8570;
+  font-size: 12px;
+  line-height: 18px;
+}
+
+.vf-estimate b { color: #1a2e1f; font-weight: 800; }
+.vf-estimate-icon { font-size: 13px; }
+
+/* Batalkan fermentasi + hapus wadah */
+.vf-actions-stack { display: grid; gap: 8px; }
+
+.vf-undo {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border: .7px solid rgb(244 165 53 / 30%);
+  border-radius: 20px;
+  background: #fef3c7;
+  color: #92400e;
+  font: 400 14px/20px "Nunito", system-ui, sans-serif;
+  text-align: left;
+  cursor: pointer;
+}
+
+.vf-undo .vf-delete-text strong { font-weight: 800; }
+.vf-undo .vf-delete-text small { color: rgb(146 64 14 / 70%); font-size: 11px; font-weight: 600; line-height: 16.5px; }
+.vf-undo:focus-visible { outline: 2px solid #2d7a4f; outline-offset: 2px; }
+
+/* ======== Status matang ======== */
+.vf-pill-matang { background: #f4a535; color: #fff; }
+.vf-matang-title { margin: 14px 0 0; color: #f4a535; font-size: 32px; font-weight: 800; line-height: 48px; }
+
+.vf-harvest {
+  display: block;
+  width: 100%;
+  height: 55px;
+  border: .7px solid rgb(45 122 79 / 20%);
+  border-radius: 16px;
+  background: #f4a535;
+  color: #fff;
+  font: 800 15px/22.5px "Nunito", system-ui, sans-serif;
+  text-align: center;
+  cursor: pointer;
+}
+
+.vf-harvest:active { background: #e0942a; }
+.vf-harvest:focus-visible { outline: 2px solid #2d7a4f; outline-offset: 2px; }
+
+/* Tombol bawah: hijau pudar tetapi bisa ditekan */
+.vf-photo {
+  display: flex;
+  width: 100%;
+  height: 55px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: .7px solid rgb(45 122 79 / 20%);
+  border-radius: 16px;
+  background: #e8f5ee;
+  color: #2d7a4f;
+  font: 800 14px/21px "Nunito", system-ui, sans-serif;
+  cursor: pointer;
+}
+
+.vf-photo:focus-visible { outline: 2px solid #2d7a4f; outline-offset: 2px; }
+.vf-photo:active { background: #d7ecdf; }

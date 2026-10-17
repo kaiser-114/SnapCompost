@@ -1,0 +1,171 @@
+/* Layar kamera */
+
+.camera-screen {
+  position: relative;
+  background: #080d0a;
+  color: white;
+}
+
+.camera-header {
+  display: flex;
+  min-height: 42px;
+  flex: 0 0 42px;
+  align-items: center;
+  justify-content: center;
+  padding: 0 12px;
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.camera-close {
+  position: absolute;
+  top: 7px;
+  left: 10px;
+  display: grid;
+  width: 28px;
+  height: 28px;
+  place-items: center;
+  border: 1px solid rgb(255 255 255 / 15%);
+  border-radius: 50%;
+  background: rgb(255 255 255 / 12%);
+  color: #fff;
+  cursor: pointer;
+}
+
+.camera-close svg {
+  width: 15px;
+  height: 15px;
+}
+
+.camera-preview {
+  position: relative;
+  display: grid;
+  min-height: 0;
+  flex: 1;
+  place-items: center;
+  margin: 0 8px;
+  overflow: hidden;
+  border-radius: 11px;
+  background: #141b16;
+}
+
+.camera-preview video,
+.camera-preview img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.camera-preview img[hidden],
+.camera-preview video[hidden] {
+  display: none;
+}
+
+.camera-placeholder {
+  max-width: 245px;
+  padding: 24px;
+  color: #d1dad3;
+  font-size: 12px;
+  line-height: 1.55;
+  text-align: center;
+}
+
+.camera-placeholder strong {
+  display: block;
+  margin-bottom: 6px;
+  color: white;
+  font-size: 14px;
+}
+
+.camera-error {
+  display: block;
+  margin-top: 10px;
+  color: #f5c18b;
+  font-size: 10px;
+}
+
+.camera-error[hidden] {
+  display: none;
+}
+
+.camera-controls {
+  display: flex;
+  min-height: 94px;
+  flex: 0 0 94px;
+  align-items: center;
+  justify-content: space-evenly;
+  padding-bottom: 15px;
+}
+
+.camera-control {
+  display: grid;
+  width: 40px;
+  height: 40px;
+  place-items: center;
+  padding: 0;
+  border: 1px solid rgb(255 255 255 / 12%);
+  border-radius: 50%;
+  background: rgb(255 255 255 / 10%);
+  color: white;
+  cursor: pointer;
+}
+
+.camera-control svg {
+  width: 19px;
+  height: 19px;
+}
+
+.shutter-button {
+  display: grid;
+  width: 56px;
+  height: 56px;
+  place-items: center;
+  padding: 0;
+  border: 4px solid #dfe5e0;
+  border-radius: 50%;
+  background: white;
+  cursor: pointer;
+}
+
+.shutter-button span {
+  width: 42px;
+  height: 42px;
+  border: 1px solid #dce2dd;
+  border-radius: 50%;
+  background: #fff;
+}
+
+.shutter-button:disabled,
+.camera-control:disabled {
+  cursor: not-allowed;
+  opacity: .45;
+}
+
+/* Dinaikkan ke tepi bawah pratinjau (tepat di atas bar kontrol 94px) dan diperbesar supaya langsung terlihat */
+.camera-alternative {
+  position: absolute;
+  right: 16px;
+  bottom: 102px;
+  left: 16px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: #e6ece8;
+  font-size: 13px;
+}
+
+.camera-alternative button {
+  padding: 8px 14px;
+  border: 1px solid rgb(183 225 193 / 55%);
+  border-radius: 999px;
+  background: rgb(8 13 10 / 62%);
+  color: #b7e1c1;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.camera-alternative button:active { background: rgb(8 13 10 / 85%); }

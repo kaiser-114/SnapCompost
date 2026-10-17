@@ -1,0 +1,234 @@
+/* Kartu wadah (dipakai Beranda & Wadah) */
+
+.vessels {
+  display: grid;
+  gap: 7px;
+}
+
+.vessel-card {
+  min-height: 91px;
+  padding: 10px 9px 8px;
+  border: 1px solid #e6eee8;
+  border-radius: 13px;
+  background: #fff;
+  box-shadow: 0 2px 6px rgb(36 70 47 / 5%);
+}
+
+.vessel-top {
+  display: flex;
+  align-items: center;
+  min-height: 29px;
+  gap: 8px;
+}
+
+.vessel-icon {
+  display: grid;
+  width: 31px;
+  height: 31px;
+  flex: 0 0 31px;
+  place-items: center;
+  border-radius: 50%;
+  background: #f0f8f0;
+  color: #6aab6c;
+}
+
+.vessel-icon svg {
+  width: 18px;
+  height: 18px;
+}
+
+.vessel-info {
+  min-width: 0;
+  flex: 1;
+}
+
+.vessel-name-line {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.vessel-name {
+  font-size: 11px;
+  font-weight: 650;
+  letter-spacing: -.15px;
+}
+
+.type-pill {
+  padding: 2px 6px;
+  border-radius: 9px;
+  background: #e7f4e9;
+  color: #4a8b58;
+  font-size: 7px;
+  line-height: 10px;
+}
+
+.type-pill.orange {
+  background: #fff0d9;
+  color: #ae7725;
+  font-weight: 700;
+}
+
+.chevron {
+  width: 14px;
+  height: 14px;
+  color: #8f9b92;
+}
+
+.progress-track {
+  height: 5px;
+  margin: 7px 0 5px;
+  overflow: hidden;
+  border-radius: 5px;
+  background: #e7f1eb;
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: inherit;
+  background: #0877af;
+}
+
+.progress-fill.green {
+  background: #287f56;
+}
+
+.vessel-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #718077;
+  font-size: 8px;
+  line-height: 12px;
+}
+
+.vessel-foot .ready {
+  color: #d7973b;
+  font-weight: 600;
+}
+
+.vessel-card[role="button"],
+.wadah-card[role="button"] {
+  cursor: pointer;
+}
+
+.vessel-card[role="button"]:focus-visible,
+.wadah-card[role="button"]:focus-visible {
+  outline: 2px solid #34865a;
+  outline-offset: 2px;
+}
+
+.vessel-status-pill {
+  padding: 2px 6px;
+  border-radius: 9px;
+  background: #fff0d9;
+  color: #9c6b22;
+  font-size: 7px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* ===== Beranda: gaya baru (dibatasi .vessel-card agar halaman Wadah tidak berubah) ===== */
+
+.vessels {
+  gap: 12px;
+}
+
+.vessel-card {
+  min-height: 0;
+  padding: 14px 14px 12px;
+  border-radius: 14px;
+}
+
+.vessel-card .vessel-top {
+  min-height: 42px;
+  gap: 12px;
+}
+
+.vessel-card .vessel-icon {
+  width: 40px;
+  height: 40px;
+  flex-basis: 40px;
+}
+
+.vessel-card .vessel-icon.eco    { background: var(--eco-bg);    color: var(--eco); }
+.vessel-card .vessel-icon.kompos { background: var(--kompos-bg); color: var(--kompos); }
+
+.vessel-card .vessel-icon svg {
+  width: 22px;
+  height: 22px;
+}
+
+.vessel-card .vessel-name {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: -.2px;
+}
+
+.vessel-card .vessel-name-line {
+  gap: 8px;
+}
+
+.vessel-card .vessel-status-pill {
+  padding: 2px 8px;
+  border-radius: 10px;
+  background: var(--amber);
+  color: #fff;
+  font-size: 9px;
+  line-height: 12px;
+}
+
+.vessel-card .type-pill {
+  display: inline-block;
+  margin-top: 4px;
+  padding: 2px 8px;
+  font-size: 10px;
+  line-height: 13px;
+}
+
+.vessel-card .type-pill.eco    { background: var(--eco-soft);    color: var(--eco); }
+.vessel-card .type-pill.kompos { background: var(--kompos-soft); color: var(--kompos); }
+
+.vessel-card .chevron {
+  width: 18px;
+  height: 18px;
+}
+
+.vessel-card .progress-track {
+  height: 7px;
+  margin: 10px 0 8px;
+  background: var(--panel);
+}
+
+.vessel-card .progress-fill       { background: var(--eco); }
+.vessel-card .progress-fill.green { background: var(--kompos); }
+
+.vessel-card .vessel-foot {
+  font-size: 11px;
+  line-height: 15px;
+}
+
+.vessel-card .vessel-foot .ready {
+  color: var(--amber);
+  font-weight: 700;
+}
+
+/* Wadah masih mengisi: titik oranye + teks, tanpa bar */
+.vessel-card .waiting-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  color: #d7973b;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.vessel-card .waiting-label::before {
+  width: 7px;
+  height: 7px;
+  flex: 0 0 7px;
+  border-radius: 50%;
+  background: var(--amber);
+  content: "";
+}

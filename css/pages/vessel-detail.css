@@ -1,0 +1,292 @@
+/* Layar detail wadah & siap fermentasi */
+
+.vessel-detail-content {
+  padding-top: 8px;
+}
+
+.vessel-detail-hero,
+.vessel-section,
+.vessel-ready-card {
+  padding: 13px;
+  border: 1px solid #e4ede6;
+  border-radius: 13px;
+  background: #fff;
+}
+
+.vessel-detail-hero {
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.vessel-detail-emoji {
+  display: grid;
+  width: 54px;
+  height: 54px;
+  place-items: center;
+  margin: 0 auto 7px;
+  border-radius: 17px;
+  background: #eaf5ec;
+  font-size: 28px;
+}
+
+.vessel-detail-hero h3,
+.vessel-ready-card h3 {
+  margin: 0;
+  color: #293b30;
+  font-size: 14px;
+}
+
+.vessel-detail-subtitle {
+  margin: 5px 0 0;
+  color: #718076;
+  font-size: 9px;
+}
+
+.vessel-section {
+  margin-bottom: 9px;
+}
+
+.vessel-section h3 {
+  margin: 0 0 4px;
+  color: #2d4033;
+  font-size: 10px;
+}
+
+.vessel-section-kicker {
+  margin: 0 0 7px;
+  color: #748278;
+  font-size: 7px;
+  font-weight: 700;
+  letter-spacing: .35px;
+  text-transform: uppercase;
+}
+
+.vessel-recipe-row,
+.vessel-material-summary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #35483a;
+  font-size: 9px;
+}
+
+.vessel-recipe-icon {
+  display: grid;
+  width: 27px;
+  height: 27px;
+  flex: 0 0 27px;
+  place-items: center;
+  border: 1px solid #e5ebe6;
+  border-radius: 6px;
+  background: #f5f8f5;
+  font-size: 13px;
+}
+
+.vessel-recipe-row strong {
+  display: block;
+  font-size: 9px;
+}
+
+.vessel-recipe-row small {
+  display: block;
+  margin-top: 2px;
+  color: #7a877d;
+  font-size: 7px;
+}
+
+.vessel-material-rows {
+  display: grid;
+  gap: 0;
+  border-top: 1px solid #e8ede9;
+}
+
+.vessel-material-summary {
+  min-height: 30px;
+  justify-content: space-between;
+  border-bottom: 1px solid #edf1ee;
+  font-size: 8px;
+}
+
+.vessel-material-summary strong {
+  color: #26362c;
+  font-size: 8px;
+  white-space: nowrap;
+}
+
+.vessel-fermentation-card,
+.vessel-mature-card {
+  margin-bottom: 9px;
+  padding: 12px;
+  border: 1px solid #e7eee8;
+  border-radius: 12px;
+  background: #fff;
+  text-align: center;
+}
+
+.vessel-phase-pill {
+  display: inline-flex;
+  min-height: 17px;
+  align-items: center;
+  padding: 2px 12px;
+  border-radius: 10px;
+  background: #dcf8e7;
+  color: #398253;
+  font-size: 7px;
+  font-weight: 700;
+}
+
+.vessel-phase-pill.mature {
+  background: #f9ad38;
+  color: #fff;
+}
+
+.vessel-phase-drop {
+  display: block;
+  margin: 3px auto;
+  font-size: 25px;
+  line-height: 30px;
+}
+
+.vessel-phase-number {
+  display: block;
+  color: #318158;
+  font-size: 25px;
+  font-weight: 750;
+  line-height: 28px;
+}
+
+.vessel-phase-caption {
+  margin: 3px 0 9px;
+  color: #78857b;
+  font-size: 8px;
+}
+
+.vessel-phase-progress {
+  height: 4px;
+  margin: 0 0 8px;
+  overflow: hidden;
+  border-radius: 5px;
+  background: #e3eee6;
+}
+
+.vessel-phase-progress span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: #34865a;
+}
+
+.vessel-estimate {
+  margin: 0;
+  color: #718076;
+  font-size: 7px;
+}
+
+.vessel-mature-card h3 {
+  margin: 2px 0 3px;
+  color: #efa435;
+  font-size: 16px;
+  font-weight: 750;
+}
+
+.vessel-mature-card p {
+  margin: 0;
+  color: #79847c;
+  font-size: 8px;
+}
+
+.vessel-harvest-button {
+  background: #f3a632;
+}
+
+.vessel-harvest-button:hover:not(:disabled) {
+  background: #df9223;
+}
+
+.vessel-section-note {
+  margin: 0 0 8px;
+  color: #7a877d;
+  font-size: 8px;
+  line-height: 12px;
+}
+
+.vessel-check-list,
+.vessel-steps {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.vessel-check-row {
+  display: flex;
+  min-height: 33px;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 8px;
+  border: 1px solid #edf1ed;
+  border-radius: 8px;
+  background: #fbfdfb;
+  color: #45564a;
+  font-size: 9px;
+  line-height: 13px;
+  cursor: pointer;
+}
+
+.vessel-check-row input {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+  accent-color: #2d8054;
+}
+
+.vessel-check-row:has(input:checked) {
+  border-color: #b8d9c0;
+  background: #f0f8f1;
+}
+
+.vessel-step {
+  display: grid;
+  grid-template-columns: 21px 1fr;
+  gap: 7px;
+  color: #56675b;
+  font-size: 8px;
+  line-height: 13px;
+}
+
+.vessel-step-number {
+  display: grid;
+  width: 20px;
+  height: 20px;
+  place-items: center;
+  border-radius: 50%;
+  background: #e8f4ea;
+  color: #2d8054;
+  font-size: 8px;
+  font-weight: 700;
+}
+
+.vessel-ready-card {
+  margin: auto 10px;
+  text-align: center;
+}
+
+.vessel-ready-icon {
+  display: grid;
+  width: 64px;
+  height: 64px;
+  place-items: center;
+  margin: 0 auto 12px;
+  border-radius: 50%;
+  background: #e8f6eb;
+  color: #2d8054;
+  font-size: 34px;
+}
+
+.vessel-ready-card p {
+  margin: 9px 0 14px;
+  color: #718076;
+  font-size: 9px;
+  line-height: 14px;
+}

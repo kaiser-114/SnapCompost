@@ -1,0 +1,13 @@
+/* Shell aplikasi (frame ponsel) */
+
+.phone {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: min(100%, 390px);
+  min-height: 100vh;
+  margin: 0 auto;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 12px 50px rgb(27 55 37 / 10%);
+}

@@ -1,0 +1,312 @@
+/* Layar jumlah sampah (Berapa Banyak? + Konfirmasi Jumlah) */
+
+.workflow-screen[data-workflow-screen="quantity"],
+.workflow-screen[data-workflow-screen="quantity-confirm"] {
+  --quantity-gutter: 20px;
+}
+
+[data-workflow-screen="quantity"] .workflow-header,
+[data-workflow-screen="quantity-confirm"] .workflow-header {
+  min-height: 56px;
+  flex-basis: 56px;
+  padding: 0 var(--quantity-gutter);
+  border-bottom: 1px solid #e8f5ee;
+  background: rgba(255, 255, 255, .9);
+}
+
+[data-workflow-screen="quantity"] .workflow-header h2,
+[data-workflow-screen="quantity-confirm"] .workflow-header h2 {
+  font-size: 18px;
+}
+
+[data-workflow-screen="quantity"] .workflow-back,
+[data-workflow-screen="quantity-confirm"] .workflow-back {
+  width: 38px;
+  height: 38px;
+  flex-basis: 38px;
+}
+
+[data-workflow-screen="quantity"] .workflow-back svg,
+[data-workflow-screen="quantity-confirm"] .workflow-back svg {
+  width: 20px;
+  height: 20px;
+}
+
+[data-workflow-screen="quantity"] .workflow-content,
+[data-workflow-screen="quantity-confirm"] .workflow-content {
+  padding: 20px var(--quantity-gutter) 12px;
+}
+
+[data-workflow-screen="quantity"] > .workflow-actions {
+  padding: 12px var(--quantity-gutter) calc(16px + env(safe-area-inset-bottom, 0px));
+}
+
+[data-workflow-screen="quantity-confirm"] .workflow-content .workflow-actions {
+  padding: 16px 0 calc(4px + env(safe-area-inset-bottom, 0px));
+}
+
+[data-workflow-screen="quantity"] .workflow-primary,
+[data-workflow-screen="quantity-confirm"] .workflow-primary,
+[data-workflow-screen="quantity-confirm"] .workflow-secondary {
+  width: 100%;
+  min-height: 56px;
+  border-radius: 16px;
+  font-size: 16px;
+  font-weight: 800;
+}
+
+[data-workflow-screen="quantity-confirm"] .workflow-summary {
+  margin: 0 2px 16px;
+  font-size: 14px;
+  line-height: 21px;
+}
+
+.quantity-progress {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 20px;
+  color: #6b8570;
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.quantity-progress-track {
+  height: 8px;
+  flex: 1;
+  overflow: hidden;
+  border-radius: 99px;
+  background: #e8f5ee;
+}
+
+.quantity-progress-track span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: #2d7a4f;
+}
+
+.quantity-card {
+  display: flex;
+  min-height: 260px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 28px 20px;
+  border: 1px solid #e8f5ee;
+  border-radius: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .08);
+  background: #fff;
+  text-align: center;
+}
+
+.quantity-card .waste-art {
+  width: 88px;
+  height: 88px;
+  margin-bottom: 12px;
+  font-size: 48px;
+}
+
+.quantity-name {
+  margin-bottom: 16px;
+  color: #1a2e1f;
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.quantity-type {
+  margin-bottom: 16px;
+  padding: 4px 9px;
+  border-radius: 12px;
+  background: #fff2cf;
+  color: #98751e;
+  font-size: 8px;
+}
+
+.quantity-counter {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.quantity-counter button {
+  display: grid;
+  width: 32px;
+  height: 32px;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: #e9f4eb;
+  color: #27764d;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.quantity-counter button:last-child {
+  background: #2e8054;
+  color: white;
+}
+
+.quantity-value {
+  min-width: 35px;
+  color: #27764d;
+  font-size: 25px;
+  font-weight: 750;
+}
+
+.quantity-unit {
+  margin-top: 5px;
+  color: #76847a;
+  font-size: 9px;
+}
+
+.quantity-input {
+  display: flex;
+  align-items: baseline;
+  gap: 9px;
+  border-bottom: 2px solid #d7e4da;
+  padding: 2px 6px 6px;
+}
+
+.quantity-input input {
+  width: 150px;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: #2d7a4f;
+  font: inherit;
+  font-size: 48px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.quantity-input span {
+  color: #718078;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.quantity-hint {
+  max-width: 260px;
+  margin: 14px auto 0;
+  color: #6f7d73;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.quantity-confirm-card {
+  min-height: 56px;
+  padding: 10px 14px;
+  border-radius: 14px;
+  font-size: 15px;
+}
+
+.quantity-confirm-card .waste-art {
+  width: 36px;
+  height: 36px;
+  flex-basis: 36px;
+  border-radius: 50%;
+  font-size: 20px;
+}
+
+.quantity-confirm-card strong {
+  margin-left: auto;
+  color: #1a2e1f;
+  font-size: 15px;
+}
+
+/* ---- Tambah ke Wadah, Pilih Jenis Olahan, Beri Nama Wadah: gaya seperti Cek Kondisi ---- */
+.workflow-screen[data-workflow-screen="alokasi"],
+.workflow-screen[data-workflow-screen="type-select"],
+.workflow-screen[data-workflow-screen="create-vessel"] {
+  --alur-gutter: 20px;
+}
+
+[data-workflow-screen="alokasi"] .workflow-header,
+[data-workflow-screen="type-select"] .workflow-header,
+[data-workflow-screen="create-vessel"] .workflow-header {
+  min-height: 56px;
+  flex-basis: 56px;
+  padding: 0 var(--alur-gutter);
+  border-bottom: 1px solid #e8f5ee;
+  background: rgba(255, 255, 255, .9);
+}
+
+[data-workflow-screen="alokasi"] .workflow-header h2,
+[data-workflow-screen="type-select"] .workflow-header h2,
+[data-workflow-screen="create-vessel"] .workflow-header h2 {
+  font-size: 18px;
+}
+
+[data-workflow-screen="alokasi"] .workflow-back,
+[data-workflow-screen="type-select"] .workflow-back,
+[data-workflow-screen="create-vessel"] .workflow-back {
+  width: 38px;
+  height: 38px;
+  flex-basis: 38px;
+}
+
+[data-workflow-screen="alokasi"] .workflow-back svg,
+[data-workflow-screen="type-select"] .workflow-back svg,
+[data-workflow-screen="create-vessel"] .workflow-back svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* Isi & tombol bawah: jarak tepi dan ukuran tombol disamakan dengan layar Jumlah */
+[data-workflow-screen="alokasi"] .workflow-content,
+[data-workflow-screen="type-select"] .workflow-content,
+[data-workflow-screen="create-vessel"] .workflow-content {
+  padding: 20px var(--alur-gutter) 12px;
+}
+
+[data-workflow-screen="alokasi"] > .workflow-actions,
+[data-workflow-screen="type-select"] > .workflow-actions,
+[data-workflow-screen="create-vessel"] > .workflow-actions {
+  padding: 12px var(--alur-gutter) calc(16px + env(safe-area-inset-bottom, 0px));
+}
+
+[data-workflow-screen="alokasi"] .workflow-primary,
+[data-workflow-screen="type-select"] .workflow-primary,
+[data-workflow-screen="create-vessel"] .workflow-primary {
+  width: 100%;
+  min-height: 56px;
+  border-radius: 16px;
+  font-size: 16px;
+  font-weight: 800;
+}
+
+/* Detail resep di Beri Nama Wadah (Hasil akhir + Manfaat & kegunaan) */
+.vessel-recipe-detail {
+  margin: 12px 0 16px;
+  padding-top: 12px;
+  border-top: 1px solid #e1eee4;
+}
+
+.vessel-recipe-detail[hidden] {
+  display: none;
+}
+
+.vessel-recipe-detail dt {
+  margin: 0 0 4px;
+  color: #6b8570;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.vessel-recipe-detail dd {
+  margin: 0 0 12px;
+  color: #1a2e1f;
+  font-size: 15px;
+  line-height: 22px;
+}
+
+.vessel-recipe-detail dd:last-child {
+  margin-bottom: 0;
+}
+
+.vessel-recipe-detail ul {
+  margin: 0;
+  padding-left: 20px;
+}

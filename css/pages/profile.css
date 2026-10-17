@@ -1,0 +1,235 @@
+/* Halaman Profil Anda. Header & tombol back memakai kelas .workflow-header / .workflow-back agar senada dengan halaman lain. */
+
+/* Saat Profil terbuka, semua anak .phone lain disembunyikan (cara yang sama dengan layar login). */
+.phone[data-screen="profil"] > :not(.profile-view):not(.confirm-layer):not(.loading-layer):not(.toast):not(.home-indicator) {
+  display: none !important;
+}
+
+.profile-view {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  background: #f2f8f3;   /* sama dengan .workflow-screen */
+}
+
+.profile-view[hidden] {
+  display: none;
+}
+
+.profile-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  padding: 28px 19px 16px;
+}
+
+.profile-photo {
+  position: relative;
+  display: grid;
+  flex-shrink: 0;
+  width: 104px;
+  height: 104px;
+  place-items: center;
+  overflow: hidden;
+  border-radius: 50%;
+  background: #347b55;
+  box-shadow: 0 0 0 4px #e9f3eb;
+  color: #fff;
+  font: 800 40px/1 "Nunito", system-ui, sans-serif;
+}
+
+.profile-photo img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.profile-card {
+  width: 100%;
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid #e5ede6;   /* sama dengan kartu di workflow-common.css */
+  border-radius: 16px;
+  background: #fff;
+}
+
+.profile-row {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 13px 16px;
+}
+
+.profile-row + .profile-row {
+  border-top: 1px solid #e5ede6;
+}
+
+.profile-row dt {
+  color: #6b7a70;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.profile-row dd {
+  margin: 0;
+  color: #21352a;
+  font-size: 15px;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.profile-note {
+  margin: 0;
+  color: #6b7a70;
+  font-size: 11.5px;
+  line-height: 1.45;
+  text-align: center;
+}
+
+.profile-actions {
+  padding: 12px 19px 34px;  /* ruang untuk home-indicator */
+}
+
+.profile-logout {
+  display: flex;
+  width: 100%;
+  min-height: 48px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1.5px solid #f1c9c4;
+  border-radius: 14px;
+  background: #fff;
+  color: #b3261e;
+  font: 800 15px "Nunito", system-ui, sans-serif;
+  cursor: pointer;
+}
+
+.profile-logout svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* ---- Dialog konfirmasi dalam aplikasi ---- */
+.confirm-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 40;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.confirm-layer[hidden] {
+  display: none;
+}
+
+.confirm-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgb(23 48 31 / 45%);
+}
+
+.confirm-dialog {
+  position: relative;
+  width: 100%;
+  max-width: 300px;
+  padding: 22px 20px 16px;
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 12px 32px rgb(23 48 31 / 22%);
+  text-align: center;
+}
+
+.confirm-dialog h2 {
+  margin: 0;
+  color: #27382d;
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.confirm-dialog p {
+  margin: 6px 0 0;
+  color: #6b7a70;
+  font-size: 12.5px;
+  line-height: 1.45;
+}
+
+.confirm-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 18px;
+}
+
+.confirm-btn {
+  min-height: 42px;
+  border: 1px solid #e5ede6;
+  border-radius: 12px;
+  background: #fff;
+  color: #35473a;
+  font: 800 13px "Nunito", system-ui, sans-serif;
+  cursor: pointer;
+}
+
+.confirm-btn.danger {
+  border-color: #b3261e;
+  background: #b3261e;
+  color: #fff;
+}
+
+/* ---- Loading saat keluar akun ---- */
+.loading-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  background: rgb(23 48 31 / 45%);
+}
+
+.loading-layer[hidden] {
+  display: none;
+}
+
+.loading-card {
+  display: flex;
+  min-width: 170px;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 24px 28px 20px;
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 12px 32px rgb(23 48 31 / 22%);
+}
+
+.loading-card p {
+  margin: 0;
+  color: #27382d;
+  font: 800 13px "Nunito", system-ui, sans-serif;
+}
+
+.loading-spinner {
+  width: 34px;
+  height: 34px;
+  border: 4px solid #e9f3eb;
+  border-top-color: #2d8054;
+  border-radius: 50%;
+  animation: loading-putar .8s linear infinite;
+}
+
+@keyframes loading-putar {
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loading-spinner { animation-duration: 2s; }
+}

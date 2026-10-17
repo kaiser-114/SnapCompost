@@ -1,0 +1,22 @@
+{
+  "headers": [
+    {
+      "source": "/assets/models/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+      ]
+    },
+    {
+      "source": "/firebase-messaging-sw.js",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-cache" }
+      ]
+    }
+  ],
+  "crons": [
+    { "path": "/api/cek-jadwal", "schedule": "0 0 * * *" }
+  ],
+  "functions": {
+    "api/cek-jadwal.js": { "maxDuration": 60 }
+  }
+}

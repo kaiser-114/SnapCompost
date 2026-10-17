@@ -1,0 +1,35 @@
+/* Dialog tidak ada deteksi */
+
+.no-detection-screen {
+  position: relative;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgb(15 23 18 / 45%);
+}
+
+.no-detection-dialog {
+  width: 100%;
+  padding: 23px 18px 16px;
+  border-radius: 17px;
+  background: white;
+  box-shadow: 0 14px 40px rgb(12 33 19 / 20%);
+  text-align: center;
+}
+
+.no-detection-illustration {
+  display: grid;
+  width: 62px;
+  height: 62px;
+  place-items: center;
+  margin: 0 auto 12px;
+  border-radius: 50%;
+  background: #fff3d0;
+  color: #d7a63a;
+  font-size: 32px;
+}
+
+.no-detection-dialog .workflow-actions {
+  padding: 16px 0 0;
+  background: transparent;
+}

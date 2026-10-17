@@ -1,0 +1,166 @@
+/* Responsif (harus dimuat terakhir) */
+
+@media (min-width: 480px) and (min-height: 700px) {
+  .phone {
+    min-height: min(100vh, 844px);
+    margin-top: max(0px, calc((100vh - 844px) / 2));
+    border-radius: 25px;
+  }
+}
+
+@media (max-height: 700px) {
+  .phone {
+    min-height: 700px;
+  }
+}
+
+/* =========================================================
+   MODE APLIKASI DI HP (layar < 480px)
+   .phone dikunci setinggi layar yang terlihat. Halaman tidak ikut scroll;
+   hanya area isi yang bergulir, jadi header, nav-bar, dan tombol bawah beku.
+   --app-h / --app-top diisi oleh skrip di index.html (mengikuti keyboard).
+   ========================================================= */
+@media (max-width: 479px) {
+  html,
+  body {
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+    overscroll-behavior: none;
+  }
+
+  .phone {
+    position: fixed;
+    top: var(--app-top, 0px);
+    right: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    width: min(100%, 390px);
+    height: var(--app-h, 100dvh);
+    min-height: 0 !important;
+    margin: 0 auto !important;
+    overflow: hidden;
+    border-radius: 0;
+  }
+
+  /* HEADER: tetap di atas */
+  .phone > .app-header {
+    position: relative;
+    z-index: 5;
+    flex: 0 0 auto;
+  }
+
+  /* ISI BERANDA: satu-satunya area yang bergulir di halaman utama */
+  .phone > main {
+    min-height: 0;
+    flex: 1 1 auto;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Halaman Wadah: panel atas tetap, .wadah-list bergulir */
+  .phone > .wadah-view {
+    min-height: 0;
+    flex: 1 1 auto;
+  }
+
+  .wadah-list {
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* NAV-BAR: menempel di dasar .phone */
+  .bottom-nav {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: auto;
+    transform: none;
+  }
+
+  .home-indicator {
+    position: absolute;
+  }
+
+  /* Keyboard terbuka: nav-bar disembunyikan supaya tidak menutupi layar */
+  .phone.keyboard-open .bottom-nav,
+  .phone.keyboard-open .home-indicator {
+    display: none;
+  }
+
+  /* LOGIN & PROFIL */
+  .login-view {
+    flex: 1 1 auto;
+    height: 100%;
+    overflow-y: auto;
+  }
+
+  .profile-view {
+    overscroll-behavior: contain;
+  }
+
+  /* LAYAR ALUR (kamera, hasil, jumlah, wadah, dst.) */
+  .workflow-view,
+  .workflow-screen {
+    height: 100%;
+  }
+
+  .workflow-screen > .workflow-header,
+  .workflow-screen > .camera-header {
+    flex: 0 0 auto;
+  }
+
+  /* Isi bergulir sendiri */
+  .workflow-screen > .workflow-content {
+    min-height: 0;
+    flex: 1 1 auto;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* TOMBOL BAWAH (anak langsung layar): tetap di dasar, ikut naik saat keyboard muncul */
+  .workflow-screen > .workflow-actions,
+  .workflow-screen > .manual-find,
+  .workflow-screen > .not-found-actions {
+    position: relative;
+    z-index: 3;
+    flex: 0 0 auto;
+    background: #f2f8f3;
+  }
+
+  /* TOMBOL BAWAH yang berada di dalam area isi (Hasil Deteksi, Konfirmasi Sampah, Konfirmasi Jumlah):
+     isi dijadikan kolom, tombol didorong ke dasar dan menempel (sticky) saat daftar panjang */
+  .workflow-screen > .workflow-content:has(> .workflow-actions) {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .workflow-screen > .workflow-content:has(> .workflow-actions) > * {
+    flex-shrink: 0;
+  }
+
+  .workflow-content > .workflow-actions,
+  .review-footer {
+    position: sticky;
+    bottom: 0;
+    z-index: 3;
+    margin-top: auto;
+    background: #f2f8f3;
+  }
+
+  /* Cegah zoom otomatis iOS saat fokus ke input */
+  input,
+  select,
+  textarea {
+    font-size: max(16px, 1em);
+  }
+
+  button,
+  a {
+    -webkit-tap-highlight-color: transparent;
+  }
+}

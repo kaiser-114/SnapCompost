@@ -85,6 +85,8 @@ export function buatApi(sb) {
       return ubahBaris(sb.from('wadah').update({ nama: n }).eq('id', id), MUAT_ULANG);
     },
     hapusWadah: id => ubahBaris(sb.from('wadah').delete().eq('id', id), MUAT_ULANG),
+    // Wadah sedang fermentasi: hapus + kurangi user.total_gram_dimanfaatkan sebesar wadah.gram_dihitung, satu transaksi (RPC hapus_wadah, lihat 04_hapus_dan_batalkan.sql)
+    hapusWadahFermentasi: id => rpc('hapus_wadah', { id_wadah: id }),
 
     // Centang SATU bahan di server (tidak menimpa centang bahan lain dari perangkat lain). Pakai ini, bukan toggleChecklist.
     // Hasil: { ok, checklist } — checklist terbaru dari server.

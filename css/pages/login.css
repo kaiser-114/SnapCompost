@@ -1,0 +1,76 @@
+/* Layar login. Warna dan font memakai nilai bawaan aplikasi (hijau #2D7A4F, latar #f8fbf7, font Nunito).
+   Kalau tokens.css punya variabel yang setara, ganti nilai --login-* di bawah dengan var(--nama-token-mu). */
+.login-view {
+  --login-bg: #f8fbf7;
+  --login-ink: #17301f;
+  --login-green: #2d7a4f;
+  --login-muted: #6b7a70;
+  --login-line: #d4e2d8;
+  --login-card: #ffffff;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 36px;
+  width: 100%;
+  min-height: 100%;
+  padding: calc(32px + env(safe-area-inset-top, 0px)) 28px calc(32px + env(safe-area-inset-bottom, 0px));
+  background: var(--login-bg);
+  color: var(--login-ink);
+  font-family: "Nunito", system-ui, sans-serif;
+}
+.login-view[hidden] { display: none; }
+
+/* Saat login tampil, semua elemen .phone lain (header, konten, navigasi bawah, alur foto) disembunyikan. */
+.phone[data-screen="login"] > :not(#login-view) { display: none !important; }
+
+.login-brand { display: flex; flex-direction: column; align-items: center; gap: 18px; }
+.login-logo {
+  display: grid;
+  place-items: center;
+  width: 132px;
+  height: 132px;
+  border-radius: 36px;
+  background: var(--login-card);
+  box-shadow: 0 14px 36px rgba(45, 122, 79, .18);
+}
+.login-logo svg { width: 72px; height: 72px; }
+.login-brand h1 { margin: 0; font-size: 2.4rem; font-weight: 900; letter-spacing: .01em; color: var(--login-green); }
+
+.login-card {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 360px;
+  padding: 22px 20px 20px;
+  border-radius: 26px;
+  background: var(--login-card);
+  box-shadow: 0 10px 30px rgba(23, 48, 31, .08);
+  text-align: center;
+}
+.login-card-label { margin: 0 0 16px; font-size: .95rem; font-weight: 700; color: var(--login-muted); }
+
+.login-google {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 54px;
+  padding: 0 16px;
+  border: 2px solid var(--login-line);
+  border-radius: 16px;
+  background: var(--login-card);
+  color: var(--login-ink);
+  font: inherit;
+  font-size: 1.05rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+.login-google svg { width: 22px; height: 22px; flex: none; }
+.login-google:active { background: #f1f6f2; }
+.login-google:disabled { opacity: .6; cursor: progress; }
+.login-google:focus-visible { outline: 3px solid var(--login-green); outline-offset: 2px; }
+
+.login-error { margin: 14px 0 0; font-size: .9rem; font-weight: 700; color: #b3261e; }
+.login-error[hidden] { display: none; }

@@ -1,0 +1,53 @@
+// Referensi elemen DOM
+
+export const sortToggle = document.querySelector("#sort-toggle");
+export const sortMenu = document.querySelector("#sort-menu");
+export const toast = document.querySelector("#toast");
+export const notificationButton = document.querySelector(".notification");
+export const notificationLayer = document.querySelector("#notification-layer");
+export const notificationCloseButton = document.querySelector(".notification-close");
+export const homeView = document.querySelector("main");
+export const wadahView = document.querySelector("#wadah-view");
+export const brandName = document.querySelector("#brand-name");
+export const brandCount = document.querySelector("#brand-count");
+export const wadahCards = document.querySelector("#wadah-cards");
+export const wadahEmpty = document.querySelector("#wadah-empty");
+export const phone = document.querySelector(".phone");
+export const workflowView = document.querySelector("#workflow-view");
+export const cameraVideo = document.querySelector("#camera-video");
+export const cameraImagePreview = document.querySelector("#camera-image-preview");
+export const cameraPlaceholder = document.querySelector("#camera-placeholder");
+export const cameraError = document.querySelector("#camera-error");
+export const cameraCapture = document.querySelector("#camera-capture");
+export const cameraFlash = document.querySelector("#camera-flash");
+export const cameraSwitch = document.querySelector("#camera-switch");
+export const photoInput = document.querySelector("#photo-input");
+export const detectionList = document.querySelector("#detection-list");
+export const detectionSummary = document.querySelector("#detection-summary");
+export const confirmList = document.querySelector("#confirm-list");
+export const confirmCount = document.querySelector("#confirm-count");
+export const confirmAdd = document.querySelector("#confirm-add");
+export const reviewList = document.querySelector("#review-list");
+export const quantityCard = document.querySelector("#quantity-card");
+export const quantityConfirmList = document.querySelector("#quantity-confirm-list");
+export const recipeList = document.querySelector("#recipe-list");
+export const materialsList = document.querySelector("#materials-list");
+export const newVesselName = document.querySelector("#new-vessel-name");
+export const recipeError = document.querySelector("#recipe-error");
+export const vesselError = document.querySelector("#vessel-error");
+export const vesselDetailContent = document.querySelector("#vessel-detail-content");
+export const vesselDetailActions = document.querySelector("#vessel-detail-actions");
+export const vesselReadyContent = document.querySelector("#vessel-ready-content");
+export const beginFermentationButton = document.querySelector("#begin-fermentation");
+export const manualInput = document.querySelector("#manual-search-input");
+export const manualSuggestions = document.querySelector("#manual-suggestions");
+export const manualPicked = document.querySelector("#manual-picked");
+export const manualFindButton = document.querySelector("#manual-find-button");
+export const workflowError = document.querySelector("#workflow-error");
+
+// Beranda (dipakai pages/home.js)
+export const homeDate = document.querySelector("main .date");
+export const homeGreeting = document.querySelector("main h1");
+export const impactCopy = document.querySelector(".impact-copy");
+export const homeStats = document.querySelector(".stats");
+export const vesselsList = document.querySelector(".vessels");

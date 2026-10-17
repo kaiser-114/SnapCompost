@@ -505,17 +505,31 @@
     {
       "nama": "kompos",
       "label_tampilan": "Kompos basah",
-      "tipe": "padat"
+      "tipe": "padat",
+      "bentuk_akhir": "Pupuk padat remah hitam & cairan lindi",
+      "manfaat": [
+        "Pupuk penyubur tanah",
+        "Cairan lindi untuk pupuk cair"
+      ]
     },
     {
       "nama": "kompos_kering",
       "label_tampilan": "Kompos Kering",
-      "tipe": "padat"
+      "tipe": "padat",
+      "bentuk_akhir": "Pupuk padat gembur & kering",
+      "manfaat": [
+        "Pupuk penyubur tanah"
+      ]
     },
     {
       "nama": "eco_enzyme",
       "label_tampilan": "Eco-Enzyme",
-      "tipe": "cair"
+      "tipe": "cair",
+      "bentuk_akhir": "Cairan asam segar",
+      "manfaat": [
+        "Pembersih lantai & piring alami",
+        "Pupuk cair & pembasmi bau tidak sedap"
+      ]
     }
   ],
   "parameter_resep": [

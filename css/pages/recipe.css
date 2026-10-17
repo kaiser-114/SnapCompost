@@ -1,0 +1,58 @@
+/* Layar pilih jenis olahan */
+
+/* Kalimat pengantar layar "Tambah ke Wadah" & "Pilih Jenis Olahan" (sebelumnya terlalu kecil) */
+[data-workflow-screen="alokasi"] .workflow-summary,
+[data-workflow-screen="type-select"] .workflow-summary {
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.recipe-list,
+.materials-list {
+  display: grid;
+  gap: 8px;
+}
+
+.recipe-card {
+  min-height: 71px;
+  cursor: pointer;
+}
+
+.recipe-card[aria-pressed="true"] {
+  border-color: #318258;
+  box-shadow: 0 0 0 2px rgb(49 130 88 / 10%);
+}
+
+.recipe-card-icon {
+  display: grid;
+  width: 38px;
+  height: 38px;
+  flex: 0 0 38px;
+  place-items: center;
+  border-radius: 12px;
+  background: #e9f4eb;
+  font-size: 19px;
+}
+
+.recipe-card-info {
+  min-width: 0;
+  flex: 1;
+}
+
+.recipe-card-info strong {
+  display: block;
+  color: #304035;
+  font-size: 10px;
+}
+
+.recipe-card-info span {
+  display: block;
+  margin-top: 3px;
+  color: #7a877d;
+  font-size: 8px;
+  line-height: 12px;
+}
+
+.recipe-card input {
+  accent-color: #2d8054;
+}

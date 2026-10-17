@@ -1,0 +1,15 @@
+/* Ikon Wadah di navbar: garis saat tidak aktif, versi terisi saat tab Wadah aktif */
+
+.nav-item .nav-icon-filled {
+  display: none;
+}
+
+.nav-item.active .nav-icon-filled,
+.nav-item[aria-pressed="true"] .nav-icon-filled {
+  display: block;
+}
+
+.nav-item.active .nav-icon-outline,
+.nav-item[aria-pressed="true"] .nav-icon-outline {
+  display: none;
+}

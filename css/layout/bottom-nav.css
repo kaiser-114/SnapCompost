@@ -1,0 +1,86 @@
+/* Navigasi bawah */
+
+.bottom-nav {
+  position: absolute;
+  z-index: 4;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: grid;
+  height: 75px;
+  grid-template-columns: 1fr 1fr 1fr;
+  align-items: end;
+  padding: 0 22px 12px;
+  border-top: 1px solid #edf1ee;
+  background: rgb(255 255 255 / 97%);
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 3px;
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #71877a;
+  font-size: 9px;
+  cursor: pointer;
+}
+
+.nav-item svg {
+  width: 21px;
+  height: 21px;
+}
+
+.nav-item.active {
+  color: #24794f;
+}
+
+.nav-item.active svg {
+  fill: #287c51;
+  stroke: #287c51;
+}
+
+.nav-item.camera {
+  justify-content: center;
+  gap: 2px;
+  padding-top: 2px;
+}
+
+.camera-button {
+  display: grid;
+  width: 44px;
+  height: 44px;
+  margin-top: -20px;
+  place-items: center;
+  border: 3px solid white;
+  border-radius: 50%;
+  background: #258052;
+  color: white;
+  box-shadow: 0 3px 9px rgb(23 78 46 / 23%);
+}
+
+.camera-button svg {
+  width: 19px;
+  height: 19px;
+}
+
+.camera-label {
+  font-size: 9px;
+}
+
+.home-indicator {
+  position: absolute;
+  z-index: 6;
+  bottom: 4px;
+  left: 50%;
+  width: 108px;
+  height: 4px;
+  transform: translateX(-50%);
+  border-radius: 4px;
+  background: #a9aea9;
+  pointer-events: none;
+}

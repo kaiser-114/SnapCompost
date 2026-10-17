@@ -1,0 +1,36 @@
+/* Design tokens */
+
+:root {
+  color-scheme: light;
+  --green: #24734e;
+  --green-dark: #15583a;
+  --green-soft: #e8f4eb;
+  --mint: #f1f8f2;
+  --ink: #18251d;
+  --muted: #87938a;
+  --line: #e8eee9;
+  --orange: #eda63e;
+  --blue: #1179b7;
+
+  /* Beranda (target desain SnapCompost) */
+  --gutter: 16px;
+  --bg-page: #f4f8f2;
+  --panel: #e8f5ee;
+  --line-strong: #28513a;
+  --forest: #28513a;
+  --forest-70: rgb(40 81 58 / 70%);
+  --ink-deep: #1a2e1f;
+  --blue-text: #1d4ed8;
+  --green-text: #15803d;
+  --amber: #f4a535;
+  --eco: #0369a1;
+  --eco-soft: #dbeafe;
+  --eco-bg: #eff6ff;
+  --kompos: #2d7a4f;
+  --kompos-soft: #dcfce7;
+  --kompos-bg: #e8f5ee;
+  --sage: #6b8570;
+  --sage-soft: #bacfbe;
+  --brown: #92400e;
+  --yellow-soft: #fef3c7;
+}

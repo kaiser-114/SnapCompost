@@ -1,0 +1,186 @@
+/* Panel notifikasi */
+
+.notification-layer {
+  position: absolute;
+  z-index: 8;
+  inset: 47px 0 0;
+}
+
+.notification-layer[hidden] {
+  display: none;
+}
+
+.notification-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgb(24 37 29 / 35%);
+}
+
+.notification-panel {
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+  border: 1px solid #bfd3c3;
+  border-top: 0;
+  border-radius: 0 0 15px 15px;
+  background: #fff;
+  box-shadow: 0 7px 18px rgb(24 56 36 / 14%);
+}
+
+.notification-panel-header {
+  display: flex;
+  min-height: 39px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 12px;
+  border-bottom: 1px solid #e5eee7;
+}
+
+.notification-panel-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.notification-panel-title svg {
+  width: 14px;
+  height: 14px;
+  color: #648071;
+}
+
+.notification-close {
+  display: grid;
+  width: 25px;
+  height: 25px;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: #f2f7f3;
+  color: #718278;
+  cursor: pointer;
+}
+
+.notification-close svg {
+  width: 13px;
+  height: 13px;
+}
+
+.notification-list {
+  display: grid;
+  gap: 1px;
+  padding: 4px 8px 7px;
+}
+
+.notification-item {
+  display: flex;
+  min-height: 49px;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 6px;
+  border-bottom: 1px solid #edf2ee;
+}
+
+.notification-item:last-child {
+  border-bottom: 0;
+}
+
+.notification-vessel-icon {
+  display: grid;
+  width: 27px;
+  height: 27px;
+  flex: 0 0 27px;
+  place-items: center;
+  border-radius: 50%;
+  background: #eff8f0;
+  color: #6aaa6d;
+}
+
+.notification-vessel-icon svg {
+  width: 16px;
+  height: 16px;
+}
+
+.notification-copy {
+  min-width: 0;
+  flex: 1;
+}
+
+.notification-name {
+  display: block;
+  overflow: hidden;
+  font-size: 10px;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.notification-description {
+  margin: 2px 0 0;
+  color: #78877c;
+  font-size: 8px;
+  line-height: 11px;
+}
+
+.notification-description strong {
+  color: #d69137;
+  font-weight: 600;
+}
+
+.notification-view {
+  min-width: 39px;
+  padding: 5px 8px;
+  border: 0;
+  border-radius: 12px;
+  background: #287b50;
+  color: white;
+  font-size: 8px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.notification-view:hover {
+  background: #1d6842;
+}
+
+/* Lencana angka di lonceng (Beranda). Selektor dipertajam agar mengalahkan gaya titik lama di header.css */
+.notification {
+  position: relative;
+}
+
+.notification .notification-dot {
+  position: absolute;
+  top: -3px;
+  right: -3px;
+  display: grid;
+  width: auto;
+  min-width: 15px;
+  height: 15px;
+  padding: 0 4px;
+  place-items: center;
+  border: 1.5px solid #fff;
+  border-radius: 8px;
+  background: var(--amber, #f4a535);
+  color: #fff;
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.notification .notification-dot[hidden] {
+  display: none;
+}
+
+.notification-empty {
+  margin: 0;
+  padding: 14px 6px;
+  color: #78877c;
+  font-size: 10px;
+  text-align: center;
+}
+
+/* Header Beranda lebih tinggi (71px) → panel turun menyesuaikan */
+.phone[data-screen="home"] .notification-layer {
+  inset: 71px 0 0;
+}

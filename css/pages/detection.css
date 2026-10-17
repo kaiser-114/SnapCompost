@@ -1,0 +1,190 @@
+/* Layar hasil deteksi & konfirmasi sampah */
+
+.detection-list,
+.confirm-list {
+  display: grid;
+  gap: 7px;
+}
+
+.detection-card,
+.confirm-card {
+  display: flex;
+  min-height: 58px;
+  align-items: center;
+  gap: 9px;
+  padding: 8px 10px;
+  border: 1px solid #e9efea;
+  border-radius: 12px;
+  background: #fff;
+}
+
+.waste-art {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  flex: 0 0 34px;
+  place-items: center;
+  border-radius: 11px;
+  background: #fff6e9;
+  font-size: 18px;
+}
+
+.waste-art.green {
+  background: #e8f5e9;
+}
+
+.waste-art.yellow {
+  background: #fff4d9;
+}
+
+.waste-card-info {
+  min-width: 0;
+  flex: 1;
+}
+
+.waste-name {
+  display: block;
+  color: #28352d;
+  font-size: 10px;
+  font-weight: 650;
+  line-height: 14px;
+}
+
+.waste-confidence {
+  height: 4px;
+  margin-top: 5px;
+  overflow: hidden;
+  border-radius: 4px;
+  background: #e6f0e9;
+}
+
+.waste-confidence span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: #34865a;
+}
+
+.waste-percent {
+  margin-left: 6px;
+  color: #617568;
+  font-size: 8px;
+}
+
+.confirm-check {
+  width: 17px;
+  height: 17px;
+  flex: 0 0 17px;
+  accent-color: #2d8054;
+  cursor: pointer;
+}
+
+.confirm-intro {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 2px 1px 10px;
+  color: #66766a;
+  font-size: 9px;
+}
+
+.confirm-intro button {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #2d8054;
+  font-size: 8px;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+/* ---- Loading saat menyiapkan model & mendeteksi ---- */
+.detection-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 72px 16px 0;
+}
+
+.detection-loading p {
+  margin: 0;
+  color: #35473a;
+  font-size: 12px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.detection-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #e1eee4;
+  border-top-color: #2d8054;
+  border-radius: 50%;
+  will-change: transform;           /* diputar di compositor: tetap jalan walau thread utama sibuk inferensi */
+  animation: detection-putar .9s linear infinite;
+}
+
+.detection-persen {
+  color: #2d8054;
+  font-size: 24px;
+  font-weight: 800;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.detection-progress {
+  width: 100%;
+  max-width: 220px;
+  height: 6px;
+  overflow: hidden;
+  border-radius: 6px;
+  background: #e1eee4;
+}
+
+.detection-progress span {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  background: #2d8054;
+  transform: scaleX(0);
+  transform-origin: left;
+  will-change: transform;
+}
+
+@keyframes detection-putar {
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .detection-spinner { animation-duration: 2.4s; }
+}
+
+/* ---- Header layar Hasil Deteksi: disamakan dengan Cek Kondisi ---- */
+.workflow-screen[data-workflow-screen="results"] {
+  --results-gutter: 20px;
+}
+
+[data-workflow-screen="results"] .workflow-header {
+  min-height: 56px;
+  flex-basis: 56px;
+  padding: 0 var(--results-gutter);
+  border-bottom: 1px solid #e8f5ee;
+  background: rgba(255, 255, 255, .9);
+}
+
+[data-workflow-screen="results"] .workflow-header h2 {
+  font-size: 18px;
+}
+
+[data-workflow-screen="results"] .workflow-back {
+  width: 38px;
+  height: 38px;
+  flex-basis: 38px;
+}
+
+[data-workflow-screen="results"] .workflow-back svg {
+  width: 20px;
+  height: 20px;
+}

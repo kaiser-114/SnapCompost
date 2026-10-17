@@ -1,0 +1,42 @@
+/* Pesan error & toast */
+
+.workflow-error {
+  margin: 0 10px;
+  padding: 8px 10px;
+  border: 1px solid #f0d5c6;
+  border-radius: 9px;
+  background: #fff5ef;
+  color: #984d35;
+  font-size: 9px;
+  line-height: 13px;
+}
+
+.workflow-error[hidden] {
+  display: none;
+}
+
+.toast {
+  z-index: 20;
+}
+
+.toast {
+  position: absolute;
+  z-index: 10;
+  right: 20px;
+  bottom: 87px;
+  left: 20px;
+  padding: 11px 14px;
+  transform: translateY(8px);
+  border-radius: 10px;
+  background: #203b2a;
+  color: white;
+  font-size: 12px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .2s ease, transform .2s ease;
+}
+
+.toast.visible {
+  transform: translateY(0);
+  opacity: 1;
+}

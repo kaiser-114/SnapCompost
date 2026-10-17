@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, interactive-widget=resizes-content">
+  <meta name="theme-color" content="#f8fbf7">
+  <title>SnapCompost</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;0,900;1,800;1,900&display=swap">
+  <link rel="stylesheet" href="css/base/tokens.css">
+  <link rel="stylesheet" href="css/base/reset.css">
+  <link rel="stylesheet" href="css/layout/phone.css">
+  <link rel="stylesheet" href="css/layout/header.css">
+  <link rel="stylesheet" href="css/components/notification.css">
+  <link rel="stylesheet" href="css/pages/home.css">
+  <link rel="stylesheet" href="css/components/vessel-card.css">
+  <link rel="stylesheet" href="css/pages/wadah.css">
+  <link rel="stylesheet" href="css/layout/workflow.css">
+  <link rel="stylesheet" href="css/pages/camera.css">
+  <link rel="stylesheet" href="css/components/workflow-common.css">
+  <link rel="stylesheet" href="css/pages/detection.css">
+  <link rel="stylesheet" href="css/pages/review.css">
+  <link rel="stylesheet" href="css/pages/quantity.css">
+  <link rel="stylesheet" href="css/pages/recipe.css">
+  <link rel="stylesheet" href="css/pages/vessel-name.css">
+  <link rel="stylesheet" href="css/pages/vessel-detail.css">
+  <link rel="stylesheet" href="css/pages/vessel-filling.css">
+  <link rel="stylesheet" href="css/pages/create-vessel.css">
+  <link rel="stylesheet" href="css/pages/manual.css">
+  <link rel="stylesheet" href="css/pages/no-detection.css">
+  <link rel="stylesheet" href="css/components/feedback.css">
+  <link rel="stylesheet" href="css/pages/login.css">
+  <link rel="stylesheet" href="css/pages/profile.css">
+  <link rel="stylesheet" href="css/layout/bottom-nav.css">
+  <link rel="stylesheet" href="css/layout/nav-icons.css">
+  <link rel="stylesheet" href="css/layout/responsive.css">
+</head>
+<body>
+<style>
+  #splash { position: fixed; inset: 0; z-index: 9000; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 22px; padding: 24px; background: #f8fbf7; color: #17301f; font-family: "Nunito", system-ui, sans-serif; transition: opacity .35s ease; }
+  #splash.selesai { opacity: 0; pointer-events: none; }
+  .splash-logo { display: grid; place-items: center; width: 96px; height: 96px; border-radius: 28px; background: #fff;
+    box-shadow: 0 12px 30px rgba(45, 122, 79, .18); animation: splash-napas 1.8s ease-in-out infinite; }
+  .splash-logo svg { width: 54px; height: 54px; }
+  .splash-nama { margin: 0; font-size: 1.7rem; font-weight: 900; color: #2d7a4f; }
+  .splash-bar { width: min(260px, 70vw); height: 8px; border-radius: 99px; background: #d4e2d8; overflow: hidden; }
+  .splash-bar > i { display: block; width: 0; height: 100%; border-radius: inherit; background: #2d7a4f; }
+  .splash-info { display: flex; align-items: baseline; gap: 10px; font-size: .9rem; font-weight: 700; color: #6b7a70; }
+  .splash-info b { min-width: 3ch; text-align: right; font-size: 1.05rem; font-weight: 900; color: #2d7a4f; font-variant-numeric: tabular-nums; }
+  .splash-ulang { display: none; padding: 10px 18px; border: 2px solid #d4e2d8; border-radius: 14px; background: #fff; color: #17301f;
+    font: inherit; font-weight: 800; cursor: pointer; }
+  @keyframes splash-napas { 50% { transform: scale(1.07); } }
+  @media (prefers-reduced-motion: reduce) { .splash-logo { animation: none; } #splash { transition: none; } }
+</style>
+
+<div id="splash" role="status" aria-live="polite">
+  <div class="splash-logo">
+    <svg viewBox="0 0 34 34" fill="none" aria-hidden="true">
+      <path d="M15.5834 28.3333C13.0959 28.3409 10.6963 27.4132 8.86068 25.7344C7.02505 24.0555 5.88745 21.748 5.67349 19.2697C5.45953 16.7913 6.18484 14.323 7.70557 12.3544C9.22631 10.3858 11.4314 9.06059 13.8834 8.64168C21.9584 7.08334 24.0834 6.34668 26.9168 2.83334C28.3334 5.66668 29.7501 8.75501 29.7501 14.1667C29.7501 21.9583 22.9784 28.3333 15.5834 28.3333Z" stroke="#2D7A4F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M2.8335 29.75C2.8335 25.5 5.45433 22.1567 10.0302 21.25C13.4585 20.57 17.0002 18.4167 18.4168 17" stroke="#2D7A4F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </div>
+  <p class="splash-nama">SnapCompost</p>
+  <div class="splash-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="Memuat aplikasi"><i></i></div>
+  <div class="splash-info"><span id="splash-teks">Memulai…</span><b id="splash-pct">0%</b></div>
+  <button class="splash-ulang" id="splash-ulang" type="button" onclick="location.reload()">Muat ulang</button>
+</div>
+
+<script>
+  // Persentase mengikuti TAHAP yang benar-benar selesai (lihat main.js), bukan ukuran unduhan: modul ES tidak punya ukuran total.
+  // Angka naik halus menuju tahap terakhir yang dilaporkan, dan tidak pernah turun.
+  (function () {
+    var el = document.getElementById('splash'), bar = el.querySelector('.splash-bar'), isi = bar.firstElementChild,
+        pct = document.getElementById('splash-pct'), teks = document.getElementById('splash-teks'),
+        target = 5, tampil = 0, rampung = false, tutup = false;
+
+    function gambar() {
+      tampil += (target - tampil) * 0.12;
+      if (target - tampil < 0.15) tampil = target;
+      var p = Math.round(tampil);
+      isi.style.width = tampil + '%'; pct.textContent = p + '%'; bar.setAttribute('aria-valuenow', p);
+      if (rampung && tampil >= 100) {
+        if (!tutup) { tutup = true; el.classList.add('selesai'); setTimeout(function () { el.remove(); }, 450); }
+        return;
+      }
+      requestAnimationFrame(gambar);
+    }
+    requestAnimationFrame(gambar);
+
+    window.__splash = {
+      set: function (p, t) { if (p > target) target = p; if (t) teks.textContent = t; },
+      selesai: function () { rampung = true; target = 100; },
+    };
+
+    setTimeout(function () { if (!rampung) teks.textContent = 'Koneksi lambat, mohon tunggu…'; }, 15000);
+    setTimeout(function () { if (!rampung) document.getElementById('splash-ulang').style.display = 'inline-block'; }, 45000);
+  })();
+</script>
+  <div class="phone" id="app" data-screen="login">
+    <!-- Layar login (ditampilkan lewat pages/login.js; saat tampil, anak .phone lain disembunyikan oleh css/pages/login.css) -->
+    <section class="login-view" id="login-view" aria-labelledby="login-title" hidden>
+      <div class="login-brand">
+        <div class="login-logo">
+          <svg viewBox="0 0 34 34" fill="none" role="img" aria-label="Logo SnapCompost">
+<path d="M15.5834 28.3333C13.0959 28.3409 10.6963 27.4132 8.86068 25.7344C7.02505 24.0555 5.88745 21.748 5.67349 19.2697C5.45953 16.7913 6.18484 14.323 7.70557 12.3544C9.22631 10.3858 11.4314 9.06059 13.8834 8.64168C21.9584 7.08334 24.0834 6.34668 26.9168 2.83334C28.3334 5.66668 29.7501 8.75501 29.7501 14.1667C29.7501 21.9583 22.9784 28.3333 15.5834 28.3333Z" stroke="#2D7A4F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M2.8335 29.75C2.8335 25.5 5.45433 22.1567 10.0302 21.25C13.4585 20.57 17.0002 18.4167 18.4168 17" stroke="#2D7A4F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <h1 id="login-title">SnapCompost</h1>
+      </div>
+      <div class="login-card">
+        <p class="login-card-label">Masuk untuk melanjutkan</p>
+        <button class="login-google" type="button" id="login-google">
+          <svg viewBox="0 0 48 48" aria-hidden="true">
+            <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+            <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+            <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+            <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+          </svg>
+          <span id="login-google-label">Masuk dengan Google</span>
+        </button>
+        <p class="login-error" id="login-error" role="alert" hidden></p>
+      </div>
+    </section>
+
+    <!-- Header -->
+    <header class="app-header">
+      <div class="brand">
+        <svg class="brand-home-icon" viewBox="0 0 34 34" fill="none" aria-hidden="true">
+<path d="M15.5834 28.3333C13.0959 28.3409 10.6963 27.4132 8.86068 25.7344C7.02505 24.0555 5.88745 21.748 5.67349 19.2697C5.45953 16.7913 6.18484 14.323 7.70557 12.3544C9.22631 10.3858 11.4314 9.06059 13.8834 8.64168C21.9584 7.08334 24.0834 6.34668 26.9168 2.83334C28.3334 5.66668 29.7501 8.75501 29.7501 14.1667C29.7501 21.9583 22.9784 28.3333 15.5834 28.3333Z" stroke="#2D7A4F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M2.8335 29.75C2.8335 25.5 5.45433 22.1567 10.0302 21.25C13.4585 20.57 17.0002 18.4167 18.4168 17" stroke="#2D7A4F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <svg class="brand-wadah-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="m12 2.8 8 4.5v9.4l-8 4.5-8-4.5V7.3l8-4.5Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+          <path d="m4.3 7.5 7.7 4.4 7.7-4.4M12 12v9" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+        </svg>
+        <span id="brand-name">SnapCompost</span>
+        <span class="brand-count" id="brand-count" hidden>0 wadah</span>
+      </div>
+      <div class="header-actions">
+        <button class="notification" type="button" aria-label="Buka notifikasi" aria-haspopup="dialog" aria-expanded="false" aria-controls="notification-layer">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9ZM10 21h4" stroke="#53655a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span class="notification-dot" hidden></span>
+        </button>
+        <button class="user-avatar" id="user-avatar" type="button" aria-label="Buka profil Anda" hidden>
+          <span id="user-avatar-initial" aria-hidden="true"></span>
+          <img id="user-avatar-img" alt="" referrerpolicy="no-referrer" hidden>
+        </button>
+      </div>
+    </header>
+
+    <!-- Notifikasi -->
+    <div class="notification-layer" id="notification-layer" hidden>
+      <div class="notification-backdrop" data-close-notifications aria-hidden="true"></div>
+      <section class="notification-panel" role="dialog" aria-modal="true" aria-labelledby="notification-title">
+        <div class="notification-panel-header">
+          <div class="notification-panel-title" id="notification-title">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9ZM10 21h4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span>Notifikasi</span>
+          </div>
+          <button class="notification-close" type="button" aria-label="Tutup notifikasi" data-close-notifications>
+            <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="m4 4 8 8m0-8-8 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </div>
+        <div class="notification-list">
+        </div>
+      </section>
+    </div>
+
+    <!-- Halaman: Beranda -->
+    <main>
+      <p class="date"></p>
+      <h1>Selamat datang!</h1>
+      <button class="notif-banner" id="aktifkan-notifikasi" type="button" hidden>
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9ZM10 21h4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>Aktifkan notifikasi</span>
+      </button>
+
+      <section class="impact-card" aria-label="Dampak pengomposanmu">
+        <div class="impact-copy">
+          Kamu sudah memanfaatkan 0 g<br>
+          sampah organik
+          <strong>Pertahankan!</strong>
+        </div>
+        <svg class="plant-art" viewBox="0 0 164 169" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+<g clip-path="url(#clip0_409_58)">
+<path d="M138.727 23.9349C141.103 25.5041 142.597 29.3371 141.557 32.4172C132.593 60.0648 106.323 69.681 81.9187 53.5602L64.1794 41.8422C63.7949 41.6309 63.4095 41.3976 63.0231 41.1424L54.4169 35.4574C53.1874 34.6453 52.5588 32.7591 52.9548 31.294C53.3509 29.8289 54.6396 29.2732 55.8691 30.0853L60.8308 33.3629L62.0498 28.8536C69.057 2.93186 92.5945 -6.22522 113.8 7.52643L113.817 7.53803L138.727 23.9349ZM75.3633 42.8346L83.3943 48.1396C105.577 62.7928 129.189 53.9344 137.221 29.3351L112.375 12.9872L112.367 12.9814C93.4153 0.693113 72.5912 9.02051 66.4451 31.757L65.2554 36.1577L65.835 36.5406C67.533 37.3424 69.2796 37.6008 70.9503 37.2975L118.524 28.8162C118.928 28.7521 119.356 28.8414 119.762 29.0743C120.168 29.3073 120.537 29.675 120.828 30.1375C121.119 30.6 121.321 31.1397 121.413 31.6978C121.505 32.256 121.482 32.8112 121.348 33.3034C121.113 34.1716 120.586 34.7825 119.824 34.9191L75.3633 42.8346Z" fill="#2D7A4F" fill-opacity="0.4"/>
+<path d="M192.877 63.3194L185.941 60.2852C151.399 45.1748 114.01 57.9587 102.158 86.9803L88.9599 121.009L88.9489 121.037L88.9536 121.025C87.5024 124.724 89.764 129.76 94.8055 131.631C133.451 146.462 174.105 131.626 187.428 98.0557L196.914 74.1519C197.213 73.5866 197.482 73.0021 197.722 72.3985L203.51 57.5306C203.823 56.7442 203.746 55.8255 203.297 54.9767C202.849 54.1279 202.066 53.4185 201.119 53.0046C200.173 52.5906 199.141 52.5061 198.252 52.7694C197.362 53.0328 196.687 53.6226 196.375 54.4091L192.877 63.3194ZM118.008 113.022C118.601 113.813 119.484 114.415 120.468 114.698C121.451 114.98 122.457 114.922 123.27 114.535L181.156 85.7214L177.913 93.8936C166.255 123.269 131.46 135.777 98.9138 124.064L111.663 91.18C121.943 66.0503 154.027 55.6044 182.803 68.1926L187.327 70.1716L185.266 75.3668C184.971 75.5471 184.662 75.7152 184.34 75.8711L118.799 108.496C117.124 109.34 116.767 111.365 118.008 113.022ZM48.1444 48.0866C48.7832 46.097 51.2999 45.4672 53.493 46.4266L72.0401 54.5864C88.0692 61.691 97.6201 78.1698 92.4296 91.2485L91.6278 93.2689C92.221 93.537 92.7178 93.9766 93.0234 94.504C93.329 95.0313 93.422 95.6095 93.2847 96.1281C92.8772 97.2955 91.4541 97.7865 90.0745 97.183L72.563 89.5227C54.005 81.4045 43.4443 62.8136 48.1396 48.0845M86.9097 91.075L87.6676 89.1654C91.9041 78.4905 84.131 64.5944 70.4441 58.5236L52.7422 50.7382C49.3967 63.0789 58.3095 78.6475 74.1321 85.569L76.9103 86.7843L63.3998 68.5781C63.0171 68.0531 62.861 67.4471 62.9659 66.8929C63.0707 66.3386 63.4279 65.8814 63.9592 65.6211C64.0068 65.642 64.0225 65.6024 64.0225 65.6024C65.1288 65.0656 66.6344 65.4922 67.43 66.5826L82.926 87.467C83.9856 88.905 85.3421 90.1294 86.9097 91.075Z" fill="#2D7A4F" fill-opacity="0.4"/>
+<path d="M69.6698 101.076C71.9988 99.736 75.3672 100.498 76.8671 103.21C90.5285 127.205 82.8091 157.242 58.8821 171.012L41.4901 181.021C41.1417 181.262 40.7781 181.491 40.3992 181.709L31.9615 186.565C30.7561 187.259 29.1561 186.784 28.3896 185.586C27.6231 184.389 27.9457 182.868 29.1511 182.174L34.0157 179.374L31.6566 175.689C18.0953 154.5 24.65 127.282 45.2691 115.173L45.2863 115.164L69.6698 101.076ZM48.1781 171.103L56.0519 166.571C77.8005 154.055 84.595 126.936 72.4699 105.534L48.1538 119.589L48.1452 119.594C29.7189 130.416 24.071 154.624 35.9658 173.209L38.2681 176.806L38.8364 176.479C40.2873 175.34 41.4009 173.85 42.098 172.113L62.0518 122.758C62.2264 122.343 62.5168 121.993 62.8914 121.743C63.266 121.494 63.7105 121.356 64.1766 121.345C64.6426 121.333 65.1125 121.448 65.5351 121.677C65.9577 121.906 66.3169 122.24 66.5736 122.644C67.0278 123.354 67.1523 124.192 66.8335 124.983L48.1781 171.103Z" fill="#2D7A4F" fill-opacity="0.4"/>
+<path d="M150.568 140.201C153.161 139.748 155.876 141.25 156.176 143.814C159.177 166.61 140.773 188.565 114.134 193.226L94.7707 196.613C94.3673 196.713 93.9547 196.8 93.5329 196.874L84.1387 198.518C82.7967 198.752 81.5502 197.949 81.3249 196.788C81.0995 195.628 81.9703 194.498 83.3123 194.264L88.7284 193.316L88.0348 189.745C84.0475 169.219 100.33 149.208 123.38 144.998L123.399 144.994L150.568 140.201ZM104.543 190.461L113.309 188.927C137.523 184.691 153.982 164.822 151.359 144.506L124.263 149.29L124.254 149.292C103.655 153.056 89.3352 170.902 92.8325 188.906L93.5094 192.391L94.1421 192.28C95.8738 191.755 97.4392 190.859 98.727 189.656L135.457 155.507C135.772 155.222 136.165 155.019 136.595 154.919C137.025 154.819 137.475 154.827 137.896 154.941C138.316 155.055 138.692 155.272 138.981 155.567C139.271 155.862 139.463 156.224 139.538 156.615C139.671 157.302 139.461 158.005 138.873 158.553L104.543 190.461Z" fill="#2D7A4F" fill-opacity="0.4"/>
+</g>
+<defs>
+<clipPath id="clip0_409_58">
+<rect width="163.336" height="167.911" fill="white" transform="translate(0 0.583458) rotate(-0.204668)"/>
+</clipPath>
+</defs>
+</svg>
+        <div class="stats">
+          <span class="stat total">TOTAL WADAH AKTIF ANDA <b>0</b></span>
+          <span class="stat mengisi">MENGISI <b>0</b></span>
+          <span class="stat proses">PROSES <b>0</b></span>
+          <span class="stat matang">MATANG <b>0</b></span>
+        </div>
+      </section>
+
+      <div class="section-heading">
+        <span>WADAH AKTIF ANDA:</span>
+        <button class="sort-button" id="sort-toggle" type="button" aria-expanded="false" aria-controls="sort-menu">
+          <span>PROGRES</span>
+          <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="m4 6 4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="8" cy="8" r="7" stroke="currentColor"/>
+          </svg>
+        </button>
+      </div>
+      <div class="sort-menu" id="sort-menu" role="listbox" aria-label="Urutkan wadah">
+        <button type="button" role="option" aria-selected="true">Progres tertinggi</button>
+        <button type="button" role="option" aria-selected="false">Progres terendah</button>
+        <button type="button" role="option" aria-selected="false">Terbaru dibuat</button>
+        <button type="button" role="option" aria-selected="false">Terlama dibuat</button>
+      </div>
+
+      <section class="vessels" aria-label="Daftar wadah aktif"></section>
+    </main>
+
+    <!-- Halaman: Semua Wadah -->
+    <section class="wadah-view" id="wadah-view" aria-label="Semua wadah" hidden>
+      <!-- Panel atas tetap (tab, filter, urutan); hanya .wadah-list yang bergulir -->
+      <div class="wadah-top">
+        <div class="wadah-status-tabs" role="tablist" aria-label="Status wadah">
+          <button class="wadah-status-tab" type="button" role="tab" data-status-filter="active" aria-selected="true">Masih Aktif</button>
+          <button class="wadah-status-tab" type="button" role="tab" data-status-filter="harvested" aria-selected="false">Sudah Dipanen</button>
+        </div>
+
+        <div class="wadah-controls">
+          <div class="wadah-row">
+            <svg class="wadah-row-icon" viewBox="0 0 13 13" fill="none" aria-hidden="true"><path d="M11.375 2.167H7.583M5.417 2.167H1.625M11.375 6.5H6.5M4.333 6.5H1.625M11.375 10.833H8.667M6.5 10.833H1.625M7.583 1.083v2.167M4.333 5.417v2.166M8.667 9.75v2.167" stroke="currentColor" stroke-width="1.083" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <div class="wadah-filters" role="group" aria-label="Filter jenis wadah">
+              <button class="wadah-filter" type="button" data-type-filter="all" aria-pressed="true">Semua</button>
+              <button class="wadah-filter" type="button" data-type-filter="Kompos" aria-pressed="false">Kompos</button>
+              <button class="wadah-filter" type="button" data-type-filter="Eco Enzim" aria-pressed="false">Eco Enzim</button>
+            </div>
+          </div>
+          <div class="wadah-row">
+            <svg class="wadah-row-icon" viewBox="0 0 13 13" fill="none" aria-hidden="true"><path d="m11.375 8.667-2.167 2.166-2.166-2.166M9.208 10.833V2.167M1.625 4.333l2.167-2.166 2.166 2.166M3.792 2.167v8.666" stroke="currentColor" stroke-width="1.083" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <div class="wadah-sorts" role="group" aria-label="Urutkan wadah">
+              <button class="wadah-sort has-icon" type="button" data-sort="progress_tinggi" aria-pressed="true" aria-label="Progress tertinggi dulu"><svg class="wadah-arrow" viewBox="0 0 13 10.72" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M6.5 9.905c-.144 0-.281-.072-.383-.2a.8.8 0 0 1-.158-.483V.683c0-.181.057-.355.158-.483A.48.48 0 0 1 6.5 0c.144 0 .281.072.383.2.101.128.159.302.159.483v8.539c0 .181-.058.355-.159.483a.48.48 0 0 1-.383.2Z"/><path fill-rule="evenodd" clip-rule="evenodd" d="M6.5 10.717a.54.54 0 0 1-.383-.158L3.68 8.121a.542.542 0 0 1 .766-.766L6.5 9.41l2.055-2.055a.542.542 0 0 1 .765.766l-2.437 2.438a.54.54 0 0 1-.383.158Z"/></svg>Progress</button>
+              <button class="wadah-sort has-icon" type="button" data-sort="progress_rendah" aria-pressed="false" aria-label="Progress terendah dulu"><svg class="wadah-arrow" viewBox="0 2.28 13 10.72" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M6.5 3.095c.144 0 .281.072.383.2.101.128.159.302.159.483v8.539c0 .181-.058.355-.159.483A.48.48 0 0 1 6.5 13a.48.48 0 0 1-.383-.2.8.8 0 0 1-.159-.483V3.778c0-.181.058-.355.159-.483a.48.48 0 0 1 .383-.2Z"/><path fill-rule="evenodd" clip-rule="evenodd" d="M6.5 2.283a.54.54 0 0 1 .383.158l2.437 2.438a.542.542 0 0 1-.765.766L6.5 3.59 4.445 5.645a.542.542 0 0 1-.766-.766l2.438-2.438a.54.54 0 0 1 .383-.158Z"/></svg>Progress</button>
+              <button class="wadah-sort" type="button" data-sort="terbaru" aria-pressed="false">Terbaru</button>
+              <button class="wadah-sort" type="button" data-sort="terlama" aria-pressed="false">Terlama</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="wadah-list">
+        <div class="wadah-cards" id="wadah-cards"></div>
+        <p class="wadah-empty" id="wadah-empty" hidden>Tidak ada wadah untuk filter ini.</p>
+      </div>
+    </section>
+
+    <!-- Alur foto & input sampah (layar penuh) -->
+    <section class="workflow-view" id="workflow-view" aria-label="Kamera dan input sampah" hidden>
+      <!-- Layar alur: camera -->
+      <div class="workflow-screen camera-screen" data-workflow-screen="camera" hidden>
+        <header class="camera-header">
+          <button class="camera-close" type="button" aria-label="Tutup kamera" data-workflow-back>
+            <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="m5 5 10 10m0-10L5 15" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+          </button>
+          <span>Foto Sampah</span>
+        </header>
+        <div class="camera-preview">
+          <video id="camera-video" autoplay playsinline muted hidden></video>
+          <img id="camera-image-preview" alt="Foto sampah yang dipilih" hidden>
+          <div class="camera-placeholder" id="camera-placeholder">
+            <strong>Kamera belum aktif</strong>
+            Izinkan akses kamera atau pilih foto dari perangkat.
+            <span class="camera-error" id="camera-error" role="status" hidden></span>
+          </div>
+        </div>
+        <div class="camera-controls">
+          <button class="camera-control" id="camera-flash" type="button" aria-label="Nyalakan lampu flash" title="Flash" disabled>
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m13 2-8 12h6l-1 8 9-13h-6l1-7Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+          </button>
+          <button class="shutter-button" id="camera-capture" type="button" aria-label="Ambil foto" disabled><span></span></button>
+          <button class="camera-control" id="camera-switch" type="button" aria-label="Ganti kamera" title="Ganti kamera" disabled>
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 7v5h-5M4 17v-5h5M5.6 9A7 7 0 0 1 18 6.5L20 8M4 16l2-1.5A7 7 0 0 0 18.4 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+        <div class="camera-alternative">
+          <span>atau</span>
+          <button type="button" id="choose-photo">Pilih foto dari perangkat</button>
+        </div>
+      </div>
+
+      <!-- Layar alur: results -->
+      <div class="workflow-screen" data-workflow-screen="results" hidden>
+        <header class="workflow-header">
+          <button class="workflow-back" type="button" aria-label="Tutup dan kembali" data-workflow-back>
+            <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="m12.5 4-6 6 6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <h2>Hasil Deteksi</h2>
+        </header>
+        <div class="workflow-content">
+          <p class="workflow-summary" id="detection-summary">AI mendeteksi 4 jenis sampah dari foto kamu:</p>
+          <p class="workflow-error" id="workflow-error" role="alert" hidden></p>
+          <div class="detection-list" id="detection-list"></div>
+          <div class="workflow-actions">
+            <button class="workflow-primary" type="button" id="to-confirm">✓ Deteksi sudah benar, lanjut</button>
+            <button class="workflow-secondary" type="button" id="detection-correction">Ada yang salah / tidak terdeteksi</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Layar alur: confirm -->
+      <div class="workflow-screen" data-workflow-screen="confirm" hidden>
+        <header class="workflow-header">
+          <button class="workflow-back" type="button" aria-label="Kembali ke hasil deteksi" data-workflow-back="results">
+            <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="m12.5 4-6 6 6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <h2>Konfirmasi Sampah</h2>
+        </header>
+        <div class="workflow-content">
+          <div class="confirm-intro">
+            <span id="confirm-count">4 sampah siap diproses:</span>
+            <button type="button" id="toggle-all-confirm">Pilih semua</button>
+          </div>
+          <div class="confirm-list" id="confirm-list"></div>
+          <div class="workflow-actions">
+            <button class="workflow-primary" type="button" id="confirm-add" disabled>Tambahkan ke daftar sampah</button>
+            <button class="workflow-secondary" type="button" id="confirm-correction">Ada yang salah / tidak terdeteksi</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Layar alur: review -->
+      <div class="workflow-screen" data-workflow-screen="review" hidden>
+        <header class="workflow-header">
+          <button class="workflow-back" type="button" aria-label="Kembali ke hasil deteksi" data-workflow-back="results">
+            <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="m12.5 4-6 6 6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <h2>Cek Kondisi</h2>
+        </header>
+        <div class="workflow-content">
+          <div class="review-list" id="review-list"></div>
+        </div>
+      </div>
+
+      <!-- Layar alur: quantity -->
+      <div class="workflow-screen" data-workflow-screen="quantity" hidden>
+        <header class="workflow-header">
+          <button class="workflow-back" type="button" aria-label="Kembali ke pemeriksaan sampah" data-workflow-back="review">
+            <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="m12.5 4-6 6 6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <h2>Berapa Banyak?</h2>
+        </header>
+        <div class="workflow-content">
+          <div class="quantity-progress">
+            <span class="quantity-progress-track"><span id="quantity-progress-fill"></span></span>
+            <span id="quantity-progress-label">Bahan 1 dari 1</span>
+          </div>
+          <section class="quantity-card" id="quantity-card"></section>
+        </div>
+        <div class="workflow-actions">
+          <button class="workflow-primary" type="button" id="quantity-next">Lanjut →</button>
+        </div>
+      </div>
+
+      <!-- Layar alur: quantity-confirm -->
+      <div class="workflow-screen" data-workflow-screen="quantity-confirm" hidden>
+        <header class="workflow-header">
+          <button class="workflow-back" type="button" aria-label="Kembali mengatur jumlah" data-workflow-back="quantity">
+            <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="m12.5 4-6 6 6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <h2>Konfirmasi Jumlah</h2>
+        </header>
+        <div class="workflow-content">
+          <p class="workflow-summary">Periksa kembali jumlah semua sampah yang akan dimasukkan ke wadah.</p>
+          <div class="quantity-confirm-list" id="quantity-confirm-list"></div>
+          <div class="workflow-actions">
+            <button class="workflow-primary" type="button" id="quantity-confirm-continue">Konfirmasi jumlah</button>
+            <button class="workflow-secondary" type="button" data-workflow-back="quantity">Ubah jumlah</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Layar alur: alokasi — TAMBAHKAN di index.html, tepat sebelum layar type-select -->
+      <div class="workflow-screen" data-workflow-screen="alokasi" hidden>
+        <header class="workflow-header">
+          <button class="workflow-back" type="button" aria-label="Kembali ke konfirmasi jumlah" data-workflow-back="quantity-confirm">
+            <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="m12.5 4-6 6 6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <h2>Tambah ke Wadah</h2>
+        </header>
+        <div class="workflow-content">
+          <p class="workflow-summary">Ada wadah yang masih mengisi. Bagi bahan ke wadah tersebut, atau kosongkan untuk membuat wadah baru.</p>
+          <section class="vessel-card">
+            <div class="vessel-card-body">
+              <h3 class="vessel-heading">Sisa bahan yang belum dialokasikan</h3>
+              <ul class="vessel-rows" id="alokasi-bahan"></ul>
+            </div>
+          </section>
+          <div id="alokasi-wadah"></div>
+          <p class="workflow-error" id="alokasi-error" role="alert" hidden></p>
+        </div>
+        <div class="workflow-actions">
+          <button class="workflow-primary" type="button" id="alokasi-lanjut">Lanjutkan</button>
+        </div>
+      </div>
+
+      <!-- Layar alur: type-select -->
+      <div class="workflow-screen" data-workflow-screen="type-select" hidden>
+        <header class="workflow-header">
+          <button class="workflow-back" type="button" aria-label="Kembali ke konfirmasi jumlah" data-workflow-back="quantity-confirm">
+            <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="m12.5 4-6 6 6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <h2>Pilih Jenis Olahan</h2>
+        </header>
+        <div class="workflow-content">
+          <p class="workflow-summary">Pilih cara mengolah sampah yang sudah dikonfirmasi.</p>
+          <div class="recipe-list" id="recipe-list"></div>
+          <p class="workflow-error" id="recipe-error" role="alert" hidden>Pilih jenis olahan terlebih dahulu.</p>
+        </div>
+        <div class="workflow-actions">
+          <button class="workflow-primary" type="button" id="recipe-continue">Lanjutkan</button>
+        </div>
+      </div>
+
+      <!-- Layar alur: create-vessel -->
+      <div class="workflow-screen" data-workflow-screen="create-vessel" hidden>
+        <header class="workflow-header">
+          <button class="workflow-back" type="button" aria-label="Kembali memilih jenis olahan" data-workflow-back="type-select">
+            <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="m12.5 4-6 6 6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <h2>Beri Nama Wadah</h2>
+        </header>
+        <div class="workflow-content">
+          <section class="vessel-card" id="vessel-preview">
+            <div class="vessel-card-bar"></div>
+            <div class="vessel-card-body">
+              <div class="vessel-name-row">
+                <span class="vessel-icon" id="vessel-icon" aria-hidden="true"></span>
+                <input id="new-vessel-name" type="text" maxlength="32" placeholder="Nama otomatis jika dikosongkan" aria-label="Nama wadah">
+              </div>
+              <div class="vessel-recipe-box">
+                <div class="vessel-recipe">
+                  <span class="vessel-recipe-icon" aria-hidden="true">📋</span>
+                  <div><strong id="vessel-recipe-name"></strong><small id="vessel-recipe-meta"></small></div>
+                </div>
+                <dl class="vessel-recipe-detail" id="vessel-recipe-detail" hidden></dl>
+              </div>
+              <h3 class="vessel-heading">Sampah organik yang digunakan:</h3>
+              <ul class="vessel-rows" id="vessel-sampah"></ul>
+              <div class="vessel-support" id="vessel-support">
+                <h3 class="vessel-heading">Bahan pendukung yang perlu disiapkan</h3>
+                <ul class="vessel-rows" id="vessel-pendukung"></ul>
+                <p>Checklist ini ada di halaman detail wadah setelah disimpan.</p>
+              </div>
+            </div>
+          </section>
+
+          <section class="vessel-card" id="vessel-alat-card">
+            <header class="vessel-alat-head">
+              <span aria-hidden="true">🔧</span>
+              <h3 class="vessel-heading">Alat yang perlu dimodifikasi</h3>
+              <small id="vessel-alat-count"></small>
+            </header>
+            <div class="vessel-card-body" id="vessel-alat"></div>
+          </section>
+
+          <p class="vessel-note">Wadah otomatis berstatus "Mengisi". Centang checklist bahan pendukung di halaman detail, lalu tekan "Mulai Fermentasi" untuk mengunci wadah dan memulai penghitungan waktu fermentasi.</p>
+          <p class="workflow-error" id="vessel-error" role="alert" hidden></p>
+        </div>
+        <div class="workflow-actions">
+          <button class="workflow-primary" type="button" id="save-vessel">Simpan Wadah!</button>
+        </div>
+      </div>
+
+      <!-- Layar alur: vessel-detail -->
+      <div class="workflow-screen" data-workflow-screen="vessel-detail" hidden>
+        <header class="workflow-header">
+          <button class="workflow-back" type="button" aria-label="Kembali ke daftar wadah" data-workflow-back="vessel-close">
+            <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="m12.5 4-6 6 6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <h2 id="vessel-detail-heading">Detail Wadah</h2>
+        </header>
+        <div class="workflow-content vessel-detail-content" id="vessel-detail-content"></div>
+        <div class="workflow-actions" id="vessel-detail-actions"></div>
+      </div>
+
+      <!-- Layar alur: vessel-ready -->
+      <div class="workflow-screen" data-workflow-screen="vessel-ready" hidden>
+        <header class="workflow-header">
+          <button class="workflow-back" type="button" aria-label="Kembali ke detail wadah" data-workflow-back="vessel-detail">
+            <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="m12.5 4-6 6 6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <h2>Siap Fermentasi</h2>
+        </header>
+        <div class="vessel-ready-card" id="vessel-ready-content"></div>
+        <div class="workflow-actions">
+          <button class="workflow-primary" type="button" id="begin-fermentation">Mulai Fermentasi</button>
+        </div>
+      </div>
+
+      <!-- Layar alur: no-detection -->
+      <div class="workflow-screen" data-workflow-screen="no-detection" hidden>
+        <div class="no-detection-dialog" role="dialog" aria-modal="true" aria-labelledby="no-detection-title">
+          <div class="no-detection-illustration" aria-hidden="true">🔎</div>
+          <h3 id="no-detection-title">Tidak Ada Sampah Terdeteksi</h3>
+          <p>Coba ambil foto yang lebih jelas dan pastikan sampah terlihat di dalam bingkai.</p>
+          <div class="workflow-actions">
+            <button class="workflow-primary" type="button" id="retry-camera">Coba Foto Lagi</button>
+            <button class="workflow-secondary" type="button" id="manual-from-empty">Isi Secara Manual</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Layar alur: manual -->
+      <div class="workflow-screen" data-workflow-screen="manual" hidden>
+        <header class="workflow-header">
+          <button class="workflow-back" type="button" aria-label="Kembali" data-workflow-back="manual-return">
+            <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="m12.5 4-6 6 6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <h2>Isi Manual</h2>
+        </header>
+        <div class="workflow-content">
+          <p class="manual-note">Ketik nama sampah yang kamu maksud — kami akan coba mencocokkan dengan resep yang ada.</p>
+          <label class="manual-search-label" for="manual-search-input">Nama sampah</label>
+          <div class="manual-search-wrap">
+            <div class="manual-search">
+              <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M8.8 15.2a6.4 6.4 0 1 0 0-12.8 6.4 6.4 0 0 0 0 12.8ZM13.5 13.5 18 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              <input id="manual-search-input" type="search" role="combobox" aria-autocomplete="list" aria-controls="manual-suggestions" aria-expanded="false" placeholder="Contoh: sisa nasi" autocomplete="off">
+            </div>
+            <div class="manual-suggestions" id="manual-suggestions" role="listbox" hidden></div>
+          </div>
+          <div class="manual-picked" id="manual-picked" aria-label="Sampah yang dipilih"></div>
+        </div>
+        <div class="manual-find">
+          <button class="workflow-primary" type="button" id="manual-find-button">Cari</button>
+          <button class="workflow-secondary" type="button" id="manual-rescan">Scan ulang dengan foto baru</button>
+        </div>
+      </div>
+
+      <!-- Layar alur: not-found -->
+      <div class="workflow-screen manual-not-found" data-workflow-screen="not-found" hidden>
+        <header class="workflow-header">
+          <button class="workflow-back" type="button" aria-label="Kembali ke input manual" data-workflow-back="manual">
+            <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="m12.5 4-6 6 6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <h2>Isi Manual</h2>
+        </header>
+        <div class="not-found-body">
+          <span class="not-found-face" aria-hidden="true">🤔</span>
+          <h3>Sampah Tidak Ditemukan</h3>
+          <p id="not-found-message">Nama sampah belum ada di daftar resep kami. Coba gunakan nama lain atau kembali ke hasil deteksi.</p>
+        </div>
+        <div class="not-found-actions">
+          <button class="workflow-primary" type="button" id="try-another-name">Coba Nama Lain</button>
+          <button class="workflow-secondary" type="button" id="not-found-back">Kembali ke Hasil Deteksi</button>
+        </div>
+      </div>
+    </section>
+    <!-- Halaman: Profil Anda (dibuka dari foto profil di header Beranda; diatur pages/profile.js) -->
+    <section class="profile-view" id="profile-view" aria-labelledby="profile-title" hidden>
+      <header class="workflow-header">
+        <button class="workflow-back" type="button" id="profile-back" aria-label="Kembali">
+          <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="m12.5 4-6 6 6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <h2 id="profile-title">Profil Anda</h2>
+      </header>
+      <div class="profile-body">
+        <div class="profile-photo">
+          <span id="profile-initial" aria-hidden="true"></span>
+          <img id="profile-img" alt="Foto profil" referrerpolicy="no-referrer" hidden>
+        </div>
+        <dl class="profile-card">
+          <div class="profile-row">
+            <dt>Nama</dt>
+            <dd id="profile-name">-</dd>
+          </div>
+          <div class="profile-row">
+            <dt>Email</dt>
+            <dd id="profile-email">-</dd>
+          </div>
+        </dl>
+        <p class="profile-note">Nama, email, dan foto diambil dari akun Google Anda dan tidak dapat diubah di sini.</p>
+      </div>
+      <div class="profile-actions">
+        <button class="profile-logout" id="logout" type="button">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h3M16 8l4 4-4 4M20 12H9" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Keluar
+        </button>
+      </div>
+    </section>
+
+    <input id="photo-input" type="file" accept="image/*" hidden>
+
+    <!-- Navigasi bawah -->
+    <nav class="bottom-nav" aria-label="Navigasi utama">
+      <button class="nav-item active" type="button" data-tab="Beranda" aria-pressed="true">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1V10Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+        </svg>
+        <span>Beranda</span>
+      </button>
+      <button class="nav-item camera" type="button" data-tab="Foto" aria-pressed="false">
+        <span class="camera-button" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M4 8.5h3l1.4-2h7.2l1.4 2h3a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-8a1 1 0 0 1 1-1Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+            <circle cx="12" cy="13" r="3.2" stroke="currentColor" stroke-width="1.5"/>
+          </svg>
+        </span>
+        <span class="camera-label">Foto</span>
+      </button>
+      <button class="nav-item" type="button" data-tab="Wadah" aria-pressed="false">
+        <svg class="nav-icon-outline" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="m12 2.8 8 4.5v9.4l-8 4.5-8-4.5V7.3l8-4.5Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
+          <path d="m4.3 7.5 7.7 4.4 7.7-4.4M12 12v9" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
+          <path d="m8 5.1 8 4.5v4.6l-8-4.5V5.1Z" fill="currentColor" opacity=".22"/>
+        </svg>
+        <svg class="nav-icon-filled" viewBox="0 0 35 35" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+<path d="M16.0417 31.6896C16.4851 31.9456 16.988 32.0803 17.5 32.0803C18.012 32.0803 18.5149 31.9456 18.9583 31.6896L29.1667 25.8562C29.6096 25.6005 29.9775 25.2328 30.2335 24.79C30.4895 24.3471 30.6245 23.8448 30.625 23.3333V11.6667C30.6245 11.1552 30.4895 10.6528 30.2335 10.21C29.9775 9.7672 29.6096 9.39948 29.1667 9.14374L18.9583 3.31041C18.5149 3.05442 18.012 2.91965 17.5 2.91965C16.988 2.91965 16.4851 3.05442 16.0417 3.31041L5.83333 9.14374C5.39038 9.39948 5.02247 9.7672 4.76651 10.21C4.51054 10.6528 4.37552 11.1552 4.375 11.6667V23.3333C4.37552 23.8448 4.51054 24.3471 4.76651 24.79C5.02247 25.2328 5.39038 25.6005 5.83333 25.8562L16.0417 31.6896Z" fill="#2D7A4F" stroke="white" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M17.5 32.0833V17.5" stroke="white" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M4.79785 10.2083L17.4999 17.5L30.202 10.2083" stroke="white" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M10.9375 6.22708L24.0625 13.7375" stroke="white" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+        <span>Wadah</span>
+      </button>
+    </nav>
+    <div class="home-indicator" aria-hidden="true"></div>
+    <!-- Dialog konfirmasi dalam aplikasi (ui/components/confirm-dialog.js) -->
+    <div class="confirm-layer" id="confirm-layer" hidden>
+      <div class="confirm-backdrop" data-confirm-backdrop></div>
+      <div class="confirm-dialog" role="alertdialog" aria-modal="true" aria-labelledby="confirm-title" aria-describedby="confirm-message">
+        <h2 id="confirm-title">Konfirmasi</h2>
+        <p id="confirm-message"></p>
+        <div class="confirm-actions">
+          <button class="confirm-btn" id="confirm-cancel" type="button">Batal</button>
+          <button class="confirm-btn danger" id="confirm-yes" type="button">Ya</button>
+        </div>
+      </div>
+    </div>
+    <!-- Loading saat keluar akun (ditampilkan main.js sampai halaman dimuat ulang) -->
+    <div class="loading-layer" id="logout-loading" role="status" aria-live="polite" hidden>
+      <div class="loading-card">
+        <span class="loading-spinner" aria-hidden="true"></span>
+        <p>Sedang keluar…</p>
+      </div>
+    </div>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  </div>
+
+  <!-- Sesuaikan tinggi aplikasi dengan area yang terlihat (di atas keyboard), supaya header/nav/tombol bawah tetap beku -->
+  <script>
+    (function () {
+      var vv = window.visualViewport, phone = document.getElementById('app'), root = document.documentElement.style;
+      if (!vv || !phone) return;
+      var basis = vv.height;
+
+      function sesuaikan() {
+        if (vv.height > basis || Math.abs(window.innerWidth - (sesuaikan.w || 0)) > 100) basis = vv.height;
+        sesuaikan.w = window.innerWidth;
+        root.setProperty('--app-h', vv.height + 'px');
+        root.setProperty('--app-top', vv.offsetTop + 'px');
+        phone.classList.toggle('keyboard-open', basis - vv.height > 150);
+        if (window.scrollY) window.scrollTo(0, 0);
+      }
+
+      vv.addEventListener('resize', sesuaikan);
+      vv.addEventListener('scroll', sesuaikan);
+      window.addEventListener('orientationchange', function () { basis = 0; setTimeout(sesuaikan, 300); });
+      sesuaikan();
+
+      // Kolom isian yang difokuskan dibawa ke tengah area yang terlihat
+      document.addEventListener('focusin', function (e) {
+        if (e.target.matches('input, textarea, select')) {
+          setTimeout(function () { e.target.scrollIntoView({ block: 'center', behavior: 'smooth' }); }, 300);
+        }
+      });
+    })();
+  </script>
+
+  <script type="module" src="js/app/main.js"></script>
+</body>
+</html>

@@ -36,6 +36,15 @@ export function muatReferensi(d) {
   d.resep.forEach(r => {
     if (d.parameter_resep.filter(p => p.nama_resep === r.nama).length !== 1) err.push(`resep "${r.nama}" harus punya tepat 1 parameter_resep`);
   });
+  // bentuk_akhir & manfaat: teks tampilan untuk detail wadah (spec §9.1); UI yang memberi bullet, jadi teks tidak boleh memuatnya
+  d.resep.forEach(r => {
+    if (!teksAda(r.bentuk_akhir)) err.push(`resep "${r.nama}": bentuk_akhir wajib berupa teks tidak kosong`);
+    if (!Array.isArray(r.manfaat) || r.manfaat.length === 0 || !r.manfaat.every(teksAda))
+      err.push(`resep "${r.nama}": manfaat wajib array berisi minimal satu teks tidak kosong`);
+    else r.manfaat.forEach(t => {
+      if (/^\s*(\d+[.)]|[-•*])/.test(t)) err.push(`resep "${r.nama}": poin manfaat tidak boleh diawali nomor/tanda poin`);
+    });
+  });
   d.parameter_resep.forEach(p => {
     if (!namaResep.has(p.nama_resep)) err.push(`parameter_resep untuk resep tak dikenal: ${p.nama_resep}`);
     ['rasio_em4', 'rasio_pelembap_tambahan', 'rasio_gula', 'rasio_air']

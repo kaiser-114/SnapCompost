@@ -1,0 +1,134 @@
+/* Kerangka alur foto/input sampah */
+
+.phone[data-workflow="camera"] .app-header,
+.phone[data-workflow="camera"] main,
+.phone[data-workflow="camera"] .wadah-view,
+.phone[data-workflow="camera"] .bottom-nav,
+.phone[data-workflow="camera"] .home-indicator,
+.phone[data-workflow="results"] .app-header,
+.phone[data-workflow="results"] main,
+.phone[data-workflow="results"] .wadah-view,
+.phone[data-workflow="results"] .bottom-nav,
+.phone[data-workflow="results"] .home-indicator,
+.phone[data-workflow="confirm"] .app-header,
+.phone[data-workflow="confirm"] main,
+.phone[data-workflow="confirm"] .wadah-view,
+.phone[data-workflow="confirm"] .bottom-nav,
+.phone[data-workflow="confirm"] .home-indicator,
+.phone[data-workflow="manual"] .app-header,
+.phone[data-workflow="manual"] main,
+.phone[data-workflow="manual"] .wadah-view,
+.phone[data-workflow="manual"] .bottom-nav,
+.phone[data-workflow="manual"] .home-indicator,
+.phone[data-workflow="not-found"] .app-header,
+.phone[data-workflow="not-found"] main,
+.phone[data-workflow="not-found"] .wadah-view,
+.phone[data-workflow="not-found"] .bottom-nav,
+.phone[data-workflow="not-found"] .home-indicator,
+.phone[data-workflow="no-detection"] .app-header,
+.phone[data-workflow="no-detection"] main,
+.phone[data-workflow="no-detection"] .wadah-view,
+.phone[data-workflow="no-detection"] .bottom-nav,
+.phone[data-workflow="no-detection"] .home-indicator {
+  display: none;
+}
+
+.phone[data-workflow="review"] .app-header,
+.phone[data-workflow="review"] main,
+.phone[data-workflow="review"] .wadah-view,
+.phone[data-workflow="review"] .bottom-nav,
+.phone[data-workflow="review"] .home-indicator,
+.phone[data-workflow="quantity"] .app-header,
+.phone[data-workflow="quantity"] main,
+.phone[data-workflow="quantity"] .wadah-view,
+.phone[data-workflow="quantity"] .bottom-nav,
+.phone[data-workflow="quantity"] .home-indicator,
+.phone[data-workflow="quantity-confirm"] .app-header,
+.phone[data-workflow="quantity-confirm"] main,
+.phone[data-workflow="quantity-confirm"] .wadah-view,
+.phone[data-workflow="quantity-confirm"] .bottom-nav,
+.phone[data-workflow="quantity-confirm"] .home-indicator,
+.phone[data-workflow="type-select"] .app-header,
+.phone[data-workflow="type-select"] main,
+.phone[data-workflow="type-select"] .wadah-view,
+.phone[data-workflow="type-select"] .bottom-nav,
+.phone[data-workflow="type-select"] .home-indicator,
+.phone[data-workflow="create-vessel"] .app-header,
+.phone[data-workflow="create-vessel"] main,
+.phone[data-workflow="create-vessel"] .wadah-view,
+.phone[data-workflow="create-vessel"] .bottom-nav,
+.phone[data-workflow="create-vessel"] .home-indicator,
+.phone[data-workflow="vessel-detail"] .app-header,
+.phone[data-workflow="vessel-detail"] main,
+.phone[data-workflow="vessel-detail"] .wadah-view,
+.phone[data-workflow="vessel-detail"] .bottom-nav,
+.phone[data-workflow="vessel-detail"] .home-indicator,
+.phone[data-workflow="vessel-ready"] .app-header,
+.phone[data-workflow="vessel-ready"] main,
+.phone[data-workflow="vessel-ready"] .wadah-view,
+.phone[data-workflow="vessel-ready"] .bottom-nav,
+.phone[data-workflow="vessel-ready"] .home-indicator {
+  display: none;
+}
+
+.workflow-view {
+  position: absolute;
+  z-index: 12;
+  inset: 0;
+  overflow: hidden;
+  background: #f2f8f3;
+}
+
+.workflow-view[hidden] {
+  display: none;
+}
+
+.workflow-screen {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  flex-direction: column;
+  overflow: hidden;
+  background: #f2f8f3;
+}
+
+.workflow-screen[hidden] {
+  display: none;
+}
+
+.workflow-header {
+  display: flex;
+  min-height: 47px;
+  flex: 0 0 47px;
+  align-items: center;
+  gap: 11px;
+  padding: 0 15px;
+  background: #f2f8f3;
+  color: #27382d;
+}
+
+.workflow-header h2 {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: -.2px;
+}
+
+.workflow-back {
+  display: grid;
+  width: 27px;
+  height: 27px;
+  flex: 0 0 27px;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: #e9f3eb;
+  color: #5b8066;
+  cursor: pointer;
+}
+
+.workflow-back svg {
+  width: 16px;
+  height: 16px;
+}

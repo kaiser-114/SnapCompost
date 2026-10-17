@@ -65,7 +65,7 @@ Buka `http://localhost:8000/Dasboard.html` di browser. Server lokal diperlukan a
 - **`data/data-referensi-snapcompost.json`** — sumber nama/label sampah, resep, syarat bahan, rasio, langkah, alat, dan jadwal. Dibaca serta divalidasi oleh `core.js`.
 - **`assets/models/best.onnx`** — model yang digunakan oleh `deteksi.js`.
 - **`assets/labels/labels.txt`** — daftar label yang harus sesuai dengan model dan nama sampah pada JSON referensi.
-- **`js/supabase-config.example.js`** — contoh bentuk konfigurasi URL proyek dan publishable/anon key. Salin menjadi `js/supabase-config.js` untuk nilai lokal; file tersebut dikecualikan oleh `.gitignore`. Jangan pernah menaruh service-role key di browser.
+- **`.env.example`**: contoh variabel lingkungan untuk konfigurasi lokal. Salin menjadi `.env`, lalu isi `VITE_SUPABASE_URL` (URL dasar project, tanpa `/rest/v1/`) dan `VITE_SUPABASE_KEY` (key publishable/anon). File `.env` dikecualikan oleh `.gitignore`. Jangan pernah menaruh service-role key atau service account Firebase di variabel berawalan `VITE_` maupun di kode browser; keduanya hanya dipasang sebagai environment variable server di Vercel (`SUPABASE_SERVICE_ROLE_KEY`, `FIREBASE_SERVICE_ACCOUNT`).
 - **`.gitignore`** — mencegah konfigurasi Supabase lokal masuk ke Git.
 - **`.vscode/mcp.json`** — konfigurasi workspace VS Code; bukan bagian runtime aplikasi.
 

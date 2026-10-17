@@ -1,0 +1,119 @@
+/* Header aplikasi & brand */
+
+.app-header {
+  display: flex;
+  min-height: 47px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 19px 5px;
+  border-bottom: 1px solid #f0f2ef;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: #21352a;
+  font-size: 15px;
+  font-weight: 750;
+  letter-spacing: -.5px;
+}
+
+.brand svg {
+  width: 20px;
+  height: 20px;
+  color: #347b55;
+}
+
+.notification {
+  position: relative;
+  display: grid;
+  width: 32px;
+  height: 32px;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: #f5f8f5;
+  cursor: pointer;
+}
+
+.notification svg {
+  width: 18px;
+  height: 18px;
+}
+
+.notification-dot {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 7px;
+  height: 7px;
+  border: 1px solid white;
+  border-radius: 50%;
+  background: #f0a53b;
+}
+
+.brand-wadah-icon {
+  display: none;
+}
+
+.phone[data-screen="wadah"] .brand-home-icon {
+  display: none;
+}
+
+.phone[data-screen="wadah"] .brand-wadah-icon {
+  display: block;
+}
+
+.notification[hidden] {
+  display: none;
+}
+
+.brand-count {
+  margin-left: 1px;
+  padding: 4px 8px;
+  border-radius: 12px;
+  background: #e8f4eb;
+  color: #28754d;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+/* Lonceng + foto profil (foto hanya tampil di Beranda) */
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.user-avatar {
+  position: relative;
+  display: grid;
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  place-items: center;
+  overflow: hidden;
+  border-radius: 50%;
+  padding: 0;
+  border: 0;
+  background: #347b55;
+  color: #fff;
+  font: 800 14px/1 "Nunito", system-ui, sans-serif;
+  cursor: pointer;
+}
+
+.user-avatar img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.user-avatar[hidden],
+.phone[data-screen="wadah"] .user-avatar {
+  display: none;
+}

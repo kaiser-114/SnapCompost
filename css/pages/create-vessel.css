@@ -1,0 +1,41 @@
+/* Layar buat wadah baru */
+
+.vessel-name-field {
+  display: grid;
+  gap: 5px;
+  margin-bottom: 13px;
+  color: #56675b;
+  font-size: 9px;
+  font-weight: 650;
+}
+
+.vessel-name-field input {
+  min-height: 37px;
+  padding: 0 10px;
+  border: 1px solid #dfe9e1;
+  border-radius: 9px;
+  background: white;
+  color: #29392e;
+  font: inherit;
+  font-size: 10px;
+}
+
+.materials-heading {
+  margin: 0 0 7px;
+  color: #647469;
+  font-size: 9px;
+  font-weight: 700;
+}
+
+.material-row {
+  min-height: 37px;
+  padding: 7px 9px;
+  color: #485b4d;
+  font-size: 9px;
+}
+
+.material-row span:last-child {
+  margin-left: auto;
+  color: #718077;
+  font-size: 8px;
+}
