@@ -6,10 +6,9 @@ import * as C from "../../logic/core.js";
 import { quantityCard, quantityConfirmList } from "../core/dom.js";
 import { hooks } from "../core/hooks.js";
 import { setWorkflowScreen } from "../core/workflow.js";
+import { ikonSampah } from "../core/waste-icon.js";
 import { bukaHasilDeteksi } from "./scan.js";
 import { kembaliKeKondisi, mulaiPerlakuan } from "./review.js";
-
-const IKON = "♻️";
 
 let sesiAktif = null;       // sesi scan pemilik isian; berganti sesi = isian dibuang
 let entri = [];             // keluaran langkah 3: [{ nama, nama_sampah, kondisi_tercentang, ... }]
@@ -52,7 +51,7 @@ function renderItem() {
   $("#quantity-progress-fill").style.width = `${((indeks + 1) / entri.length) * 100}%`;
   $("#quantity-next").textContent = indeks === entri.length - 1 ? "Periksa jumlah →" : "Lanjut →";
 
-  const art = el("span", "waste-art", IKON);
+  const art = el("span", "waste-art", ikonSampah(e.nama_sampah));
   art.setAttribute("aria-hidden", "true");
 
   const pembungkus = el("label", "quantity-input");
@@ -106,7 +105,7 @@ function lanjut() {
 function renderRingkasan() {
   quantityConfirmList.replaceChildren(...entri.map((e) => {
     const baris = el("div", "quantity-confirm-card");
-    const art = el("span", "waste-art", IKON);
+    const art = el("span", "waste-art", ikonSampah(e.nama_sampah));
     art.setAttribute("aria-hidden", "true");
     baris.append(art, el("span", null, C.dataSampah(e.nama_sampah).label_tampilan),
       el("strong", null, teksJumlah(e.nama_sampah, hasil[e.nama])));

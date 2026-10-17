@@ -16,10 +16,10 @@ import { reviewList } from "../core/dom.js";
 import { hooks } from "../core/hooks.js";
 import { showToast } from "../core/ui.js";
 import { setWorkflowScreen } from "../core/workflow.js";
+import { ikonSampah } from "../core/waste-icon.js";
 import { bukaHasilDeteksi } from "./scan.js";
 import { bentukLangkahKondisi, terapkanKondisi } from "../../logic/kondisi.js";
 
-const IKON = "♻️";
 const JEDA_OTOMATIS_MS = 180; // jeda singkat agar pilihan Ya/Tidak terlihat sebelum pindah halaman
 
 let sesiAktif = null;     // sesi scan pemilik state di bawah; berganti sesi = jawaban dibuang
@@ -77,7 +77,7 @@ function renderKondisi(keAtas = false) {
   progres.append(el("span", "review-progress-track"), el("span", null, `Sampah ${indeks + 1} dari ${halamanKondisi.length}`));
   progres.firstChild.append(isiBar);
 
-  const art = el("span", "review-card-art", IKON);
+  const art = el("span", "review-card-art", ikonSampah(b.nama));
   art.setAttribute("aria-hidden", "true");
   const kartu = el("section", "review-card");
   kartu.append(art, el("h3", "review-card-name", b.label_tampilan));
