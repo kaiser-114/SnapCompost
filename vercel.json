@@ -7,7 +7,7 @@
       ]
     },
     {
-      "source": "/firebase-messaging-sw.js",
+      "source": "/public/sw.js",
       "headers": [
         { "key": "Cache-Control", "value": "no-cache" }
       ]
