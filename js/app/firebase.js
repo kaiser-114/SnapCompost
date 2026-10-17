@@ -11,7 +11,9 @@ const app = initializeApp({
 export const messaging = getMessaging(app);
 
 export async function daftarkanSW() {
-  return navigator.serviceWorker.register('/sw.js');       // didaftarkan SEKALI
+  await navigator.serviceWorker.register('/sw.js');   // didaftarkan SEKALI
+  return navigator.serviceWorker.ready;               // tunggu sampai benar-benar aktif
+
 }
 
 // Panggil dari KLIK tombol (Android 13+), bukan otomatis saat dimuat.

@@ -8,13 +8,18 @@ firebase.initializeApp({
 const messaging = firebase.messaging();
 
 messaging.onBackgroundMessage(p => {
-  const d = p.data;
-  return self.registration.showNotification(d.judul, { body: d.isi, data: d, tag: d.id_notifikasi });
+  const d = p.data ?? {};
+  return self.registration.showNotification(d.judul || 'SnapCompost', {
+    body: d.isi || '',
+    icon: '/icons/icon-192.png',
+    data: d,
+    tag: d.id_notifikasi,
+  });
 });
 
 self.addEventListener('notificationclick', e => {
   e.notification.close();
-  const d = e.notification.data;
+  const d = e.notification.data ?? {};
   const url = `/?buka_wadah=${d.id_wadah}&notif=${d.id_notifikasi}`;
   e.waitUntil((async () => {
     const jendela = await clients.matchAll({ type: 'window', includeUncontrolled: true });
