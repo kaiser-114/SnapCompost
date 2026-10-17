@@ -18,9 +18,8 @@ import { S } from "../core/ui-state.js";
 import { hooks } from "../core/hooks.js";
 import { showToast } from "../core/ui.js";
 import { setWorkflowScreen, showWorkflowError, clearWorkflowError, closeWasteFlow } from "../core/workflow.js";
+import { ikonSampah } from "../core/waste-icon.js";
 import { revokeCapturedPhoto, startCamera } from "./camera.js";
-
-const IKON = "♻️"; // data referensi tidak punya emoji per bahan; sama dengan fallback kode lama
 
 let sesi = null; // sesi scan aktif (satu per foto)
 let ulang = false; // true = foto berikutnya adalah scan ulang: sesi lama dipertahankan
@@ -43,7 +42,7 @@ function el(tag, className, text) {
 
 function kartuDeteksi(baris) {
   const kartu = el("article", "detection-card");
-  const art = el("span", "waste-art", IKON);
+  const art = el("span", "waste-art", ikonSampah(baris.nama ?? baris.label_tampilan));
   art.setAttribute("aria-hidden", "true");
   const info = el("div", "waste-card-info");
   info.append(el("span", "waste-name", baris.label_tampilan));
@@ -249,7 +248,7 @@ function renderCek() {
     kotak.dataset.nama = k.nama;
     const nama = C.ref().peta.get(k.nama).label_tampilan;
     kotak.setAttribute("aria-label", `Pilih ${nama}`);
-    const art = el("span", "waste-art", IKON);
+    const art = el("span", "waste-art", ikonSampah(k.nama));
     art.setAttribute("aria-hidden", "true");
     const info = el("span", "waste-card-info");
     info.append(el("span", "waste-name", nama),
@@ -310,7 +309,7 @@ function renderPilihan() {
   const label = (nama) => C.ref().peta.get(nama)?.label_tampilan ?? nama;
   manualPicked.replaceChildren(...[...sesi.terverifikasi.values()].map((v) => {
     const baris = el("div", "manual-picked-item");
-    baris.append(el("span", null, `${IKON} ${label(v.nama)} · ${v.sumber === "manual" ? "Manual" : "Terdeteksi AI"}`));
+    baris.append(el("span", null, `${ikonSampah(v.nama)} ${label(v.nama)} · ${v.sumber === "manual" ? "Manual" : "Terdeteksi AI"}`));
     const hapus = el("button", null, "×");
     hapus.type = "button";
     hapus.setAttribute("aria-label", `Hapus ${label(v.nama)}`);
