@@ -1,61 +1,106 @@
-// Service worker UTAMA (satu-satunya). Versi SDK harus sama dengan package.json (firebase 10.14.1).
-// Bagian 1: Firebase Cloud Messaging (background push + notification click).
-// Bagian 2: Offline caching (precache app shell + stale-while-revalidate untuk aset) — diperlukan agar
-//            PWA Builder memberi skor tinggi pada kategori "Offline support" dan TWA bisa dipakai tanpa jaringan.
+// Service worker utama SnapCompost.
 //
-// PENTING — Caching TIDAK boleh merusak FCM:
-//   - importScripts Firebase SDK tetap dimuat dari gstatic.com (tidak di-cache SW).
-//   - Host gstatic.com, supabase.co, firebasedatabase.app, fcm.googleapis.com dilewati fetch handler.
-//   - URL same-origin dengan pathname /api/* (mis. /api/cek-jadwal) SELALU ke jaringan:
-//     tidak dibaca dari cache, tidak ditulis ke cache, tidak SWR, tidak fallback offline.
-//   - URL yang mengandung token auth (access_token, refresh_token, code, error_description, dst.)
-//     dilewati fetch handler agar sesi OAuth tidak ter-cache.
-//   - Hanya request GET yang ditangani; POST/PUT/PATCH/DELETE dijatuhkan ke jaringan.
-//   - Hanya response same-origin yang berstatus OK (res.ok && res.type === 'basic') yang di-cache.
-//   - Response opaque / cors / error / 206 partial TIDAK di-cache.
+// Bagian 1:
+// Firebase Cloud Messaging untuk background notification
+// dan penanganan klik notifikasi.
+//
+// Bagian 2:
+// Offline caching untuk PWA dan Trusted Web Activity.
+//
+// Catatan keamanan:
+// - Semua request cross-origin langsung menggunakan jaringan.
+// - Semua endpoint /api/* langsung menggunakan jaringan.
+// - Request selain GET tidak diproses oleh cache.
+// - URL autentikasi dan notifikasi dinamis tidak dicache.
+// - Hanya response same-origin yang berhasil yang boleh dicache.
+// - Response opaque, CORS, error, dan partial content tidak dicache.
 
-importScripts('https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js',
-              'https://www.gstatic.com/firebasejs/10.14.1/firebase-messaging-compat.js');
+// ================================================================
+// BAGIAN 1: FIREBASE CLOUD MESSAGING
+// ================================================================
+
+importScripts(
+  'https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js',
+  'https://www.gstatic.com/firebasejs/10.14.1/firebase-messaging-compat.js',
+);
 
 firebase.initializeApp({
-  apiKey: 'AIzaSyA049erIqw5woIx9ZVc52gGIdleL2jYp4s', projectId: 'snapcompost-9f79f', messagingSenderId: '199743837501', appId: '1:199743837501:web:2a72ae4914c688b9bf6154',   // config web Firebase (publik); SW tidak bisa baca import.meta.env
+  apiKey: 'AIzaSyA049erIqw5woIx9ZVc52gGIdleL2jYp4s',
+  projectId: 'snapcompost-9f79f',
+  messagingSenderId: '199743837501',
+  appId: '1:199743837501:web:2a72ae4914c688b9bf6154',
 });
+
 const messaging = firebase.messaging();
 
-messaging.onBackgroundMessage(p => {
-  const d = p.data ?? {};
-  return self.registration.showNotification(d.judul || 'SnapCompost', {
-    body: d.isi || '',
-    icon: '/icons/icon-192.png',
-    data: d,
-    tag: d.id_notifikasi,
-  });
+messaging.onBackgroundMessage((payload) => {
+  const data = payload.data ?? {};
+
+  return self.registration.showNotification(
+    data.judul || 'SnapCompost',
+    {
+      body: data.isi || '',
+      icon: '/icons/icon-192.png',
+      badge: '/icons/icon-192.png',
+      data,
+      tag: data.id_notifikasi || undefined,
+    },
+  );
 });
 
-self.addEventListener('notificationclick', e => {
-  e.notification.close();
-  const d = e.notification.data ?? {};
-  const url = `/?buka_wadah=${d.id_wadah}&notif=${d.id_notifikasi}`;
-  e.waitUntil((async () => {
-    const jendela = await clients.matchAll({ type: 'window', includeUncontrolled: true });
-    if (jendela[0]) {
-      await jendela[0].focus();
-      jendela[0].postMessage({ tipe: 'buka_notifikasi', id_wadah: d.id_wadah, id_notifikasi: d.id_notifikasi });
-    } else await clients.openWindow(url);
-  })());
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+
+  const data = event.notification.data ?? {};
+  const vesselId = data.id_wadah ?? '';
+  const notificationId = data.id_notifikasi ?? '';
+
+  const url =
+    `/?buka_wadah=${encodeURIComponent(vesselId)}` +
+    `&notif=${encodeURIComponent(notificationId)}`;
+
+  event.waitUntil(
+    (async () => {
+      const windows = await self.clients.matchAll({
+        type: 'window',
+        includeUncontrolled: true,
+      });
+
+      if (windows.length > 0) {
+        const activeWindow = windows[0];
+
+        await activeWindow.focus();
+
+        activeWindow.postMessage({
+          tipe: 'buka_notifikasi',
+          id_wadah: vesselId,
+          id_notifikasi: notificationId,
+        });
+
+        return;
+      }
+
+      await self.clients.openWindow(url);
+    })(),
+  );
 });
 
-/* =========================================================================
-   BAGIAN 2 — Offline caching (PWA Builder / TWA requirement)
-   ========================================================================= */
+// ================================================================
+// BAGIAN 2: OFFLINE CACHING
+// ================================================================
 
-const VERSI_CACHE = 'snapcompost-v1';
+// Naikkan versi ini setiap kali strategi cache atau app shell berubah.
+const VERSI_CACHE = 'snapcompost-v2';
+
 const CACHE_PRECACHE = `${VERSI_CACHE}-precache`;
 const CACHE_RUNTIME = `${VERSI_CACHE}-runtime`;
 
-// Aset inti aplikasi (app shell). Didaftar minimal — aset lain di-cache saat diminta pertama kali.
-// Catatan: path CSS/JS hasil build Vite ber-hash, jadi kita hanya precache shell statis;
-// modul dinamis di-cache lewat strategi runtime di bawah.
+// Aset inti aplikasi.
+//
+// File JavaScript dan CSS hasil build Vite memiliki nama ber-hash,
+// sehingga file tersebut dicache ketika pertama kali diminta.
+//
+// Model ONNX tidak diprecache karena ukurannya besar.
 const APP_SHELL = [
   '/',
   '/index.html',
@@ -65,17 +110,7 @@ const APP_SHELL = [
   '/data-referensi-snapcompost.json',
 ];
 
-// Host yang JANGAN di-cache (API & backend auth). Fetch selalu ke jaringan.
-const HOST_LEWATI = [
-  'supabase.co',
-  'supabase.in',
-  'firebasedatabase.app',
-  'fcm.googleapis.com',
-  'www.gstatic.com',     // Firebase SDK dimuat ulang setiap kali; tidak perlu di-cache SW
-];
-
-// Parameter URL yang menandakan response auth (token, kode, error). Jika ada di URL,
-// request TIDAK boleh di-cache (mencegah token OAuth tertangkap di cache storage).
+// Parameter URL yang tidak boleh disimpan ke Cache Storage.
 const PARAM_AUTH = [
   'access_token',
   'refresh_token',
@@ -87,130 +122,277 @@ const PARAM_AUTH = [
   'error_code',
   'type',
   'provider_token',
-  'buka_wadah',   // link notifikasi (postMessage saja, jangan cache)
+
+  // Parameter tautan notifikasi bersifat dinamis.
+  'buka_wadah',
   'notif',
 ];
 
-const lewati = (req) => {
-  const u = new URL(req.url, self.location.href);
+/**
+ * Menentukan apakah request harus dilewatkan langsung ke jaringan.
+ */
+const lewati = (request) => {
+  const url = new URL(request.url, self.location.href);
 
-  // Cross-origin ke backend (Supabase/Firebase/gstatic) → lewati.
-  if (u.origin !== self.location.origin) {
-    return HOST_LEWATI.some(h => u.hostname.endsWith(h));
+  // Semua request cross-origin langsung ke jaringan.
+  //
+  // Ini meliputi Supabase, Firebase, Google Fonts, gstatic,
+  // FCM, dan seluruh layanan eksternal lainnya.
+  if (url.origin !== self.location.origin) {
+    return true;
   }
 
-  // Same-origin API dinamis (mis. /api/cek-jadwal, /api/*) → SELALU ke jaringan.
-  // Tidak boleh: dibaca dari cache, ditulis ke cache, SWR, atau fallback offline lama.
-  if (u.pathname.startsWith('/api/')) return true;
+  // Endpoint API dinamis selalu menggunakan jaringan.
+  //
+  // Endpoint tidak dibaca dari cache, tidak ditulis ke cache,
+  // tidak menggunakan stale-while-revalidate, dan tidak memakai
+  // fallback offline.
+  if (url.pathname.startsWith('/api/')) {
+    return true;
+  }
 
-  // Same-origin tapi URL mengandung parameter auth/callback → lewati.
-  const semua = [...u.searchParams.keys()];
-  if (semua.some(k => PARAM_AUTH.includes(k))) return true;
+  // Jangan cache callback autentikasi atau tautan notifikasi dinamis.
+  const parameterKeys = [...url.searchParams.keys()];
 
-  // Hash fragment bisa juga berisi token (Supabase implicit flow): #access_token=...
-  if (u.hash && PARAM_AUTH.some(p => u.hash.includes(p + '='))) return true;
+  if (parameterKeys.some((key) => PARAM_AUTH.includes(key))) {
+    return true;
+  }
+
+  // Beberapa alur autentikasi menggunakan hash fragment,
+  // misalnya #access_token=...
+  if (
+    url.hash &&
+    PARAM_AUTH.some((parameter) =>
+      url.hash.includes(`${parameter}=`)
+    )
+  ) {
+    return true;
+  }
 
   return false;
 };
 
-// Fetch dengan timeout (jaringan lambat → fallback cache).
-const fetchDenganTimeout = (req, ms = 4000) => {
+/**
+ * Mengambil resource dari jaringan dengan batas waktu.
+ */
+const fetchDenganTimeout = (request, timeout = 4000) => {
   return new Promise((resolve, reject) => {
-    const ctrl = new AbortController();
-    const t = setTimeout(() => { ctrl.abort(); }, ms);
-    fetch(req, { signal: ctrl.signal, credentials: 'omit', cache: 'no-store' })
-      .then(res => { clearTimeout(t); resolve(res); })
-      .catch(err => { clearTimeout(t); reject(err); });
+    const controller = new AbortController();
+
+    const timeoutId = setTimeout(() => {
+      controller.abort();
+    }, timeout);
+
+    fetch(request, {
+      signal: controller.signal,
+      cache: 'no-store',
+    })
+      .then((response) => {
+        clearTimeout(timeoutId);
+        resolve(response);
+      })
+      .catch((error) => {
+        clearTimeout(timeoutId);
+        reject(error);
+      });
   });
 };
 
-// Apakah response aman di-cache?
-const amanDicache = (res, req) => {
-  if (!res || !res.ok) return false;                          // status non-2xx → jangan cache
-  if (res.type !== 'basic') return false;                     // opaque/cors/error → jangan cache
-  if (res.status === 206) return false;                        // partial content → jangan cache
-  if (req.cache === 'no-store') return false;                 // eksplisit no-store
+/**
+ * Memastikan response aman untuk disimpan ke Cache Storage.
+ */
+const amanDicache = (response, request) => {
+  if (!response || !response.ok) {
+    return false;
+  }
+
+  // Hanya cache response same-origin.
+  if (response.type !== 'basic') {
+    return false;
+  }
+
+  // Jangan cache response partial content.
+  if (response.status === 206) {
+    return false;
+  }
+
+  // Hormati request yang secara eksplisit melarang cache.
+  if (request.cache === 'no-store') {
+    return false;
+  }
+
   return true;
 };
 
-// Stale-while-revalidate: kembalikan cache dulu (cepat), lalu update di background.
-const swr = async (req) => {
-  const cache = await caches.open(CACHE_RUNTIME);
-  const cached = await cache.match(req);
-  const network = fetchDenganTimeout(req).then(res => {
-    if (amanDicache(res, req)) cache.put(req, res.clone());
-    return res;
-  }).catch(() => cached);
-  return cached || network;
+/**
+ * Stale-while-revalidate.
+ *
+ * Mengembalikan cache terlebih dahulu jika tersedia,
+ * kemudian memperbarui cache melalui jaringan di background.
+ */
+const staleWhileRevalidate = async (request) => {
+  const runtimeCache = await caches.open(CACHE_RUNTIME);
+  const cachedResponse = await runtimeCache.match(request);
+
+  const networkResponsePromise = fetchDenganTimeout(request)
+    .then(async (response) => {
+      if (amanDicache(response, request)) {
+        await runtimeCache.put(request, response.clone());
+      }
+
+      return response;
+    })
+    .catch(() => cachedResponse);
+
+  return cachedResponse || networkResponsePromise;
 };
 
-// Network-first dengan fallback cache (untuk navigasi/dokumen).
-const networkFirst = async (req) => {
-  const cache = await caches.open(CACHE_RUNTIME);
+/**
+ * Network-first untuk navigasi dan dokumen HTML.
+ *
+ * Jika jaringan gagal, fungsi mencari response di seluruh
+ * Cache Storage, termasuk precache dan runtime cache.
+ */
+const networkFirst = async (request) => {
+  const runtimeCache = await caches.open(CACHE_RUNTIME);
+
   try {
-    const res = await fetchDenganTimeout(req, 5000);
-    if (amanDicache(res, req)) cache.put(req, res.clone());
-    return res;
-  } catch (e) {
-    const cached = await cache.match(req);
-    if (cached) return cached;
-    // Fallback terakhir: app shell (agar TWA tidak tampilkan layar putih saat offline).
-    // Coba exact match dulu, lalu fallback ke "/" atau "/index.html".
-    return (await cache.match(req, { ignoreSearch: true }))
-      || (await cache.match('/'))
-      || (await cache.match('/index.html'))
-      || Response.error();
+    const response = await fetchDenganTimeout(request, 5000);
+
+    if (amanDicache(response, request)) {
+      await runtimeCache.put(request, response.clone());
+    }
+
+    return response;
+  } catch (error) {
+    // Cari request pada seluruh cache, termasuk precache.
+    //
+    // ignoreSearch digunakan agar route seperti /?buka=wadah
+    // dapat menggunakan app shell "/" ketika offline.
+    const cachedRequest = await caches.match(request, {
+      ignoreSearch: true,
+    });
+
+    if (cachedRequest) {
+      return cachedRequest;
+    }
+
+    // Fallback terakhir ke app shell yang tersimpan saat install.
+    return (
+      (await caches.match('/')) ||
+      (await caches.match('/index.html')) ||
+      Response.error()
+    );
   }
 };
 
+// ================================================================
+// SERVICE WORKER LIFECYCLE
+// ================================================================
+
 self.addEventListener('install', (event) => {
-  event.waitUntil((async () => {
-    const cache = await caches.open(CACHE_PRECACHE);
-    // addAll dengan best-effort: aset yang gagal (mis. tidak ada) tidak boleh gagalkan instalasi.
-    await Promise.allSettled(APP_SHELL.map(async (url) => {
-      try { await cache.add(new Request(url, { cache: 'reload' })); } catch (e) { /* abaikan */ }
-    }));
-    // Aktifkan langsung tanpa menunggu SW lama dilepas.
-    await self.skipWaiting();
-  })());
+  event.waitUntil(
+    (async () => {
+      const precache = await caches.open(CACHE_PRECACHE);
+
+      // Best effort precaching.
+      //
+      // Jika satu aset gagal dimuat, instalasi service worker
+      // tetap dilanjutkan.
+      await Promise.allSettled(
+        APP_SHELL.map(async (url) => {
+          try {
+            await precache.add(
+              new Request(url, {
+                cache: 'reload',
+              }),
+            );
+          } catch (error) {
+            console.warn(
+              `[SnapCompost SW] Gagal precache: ${url}`,
+              error,
+            );
+          }
+        }),
+      );
+
+      // Aktifkan service worker baru tanpa menunggu worker lama dilepas.
+      await self.skipWaiting();
+    })(),
+  );
 });
 
 self.addEventListener('activate', (event) => {
-  event.waitUntil((async () => {
-    const keys = await caches.keys();
-    await Promise.all(
-      keys.filter(k => !k.startsWith(VERSI_CACHE)).map(k => caches.delete(k))
-    );
-    // Klaim klien agar SW baru langsung mengontrol halaman yang sedang terbuka.
-    await self.clients.claim();
-  })());
+  event.waitUntil(
+    (async () => {
+      const cacheKeys = await caches.keys();
+
+      // Hapus cache SnapCompost versi lama.
+      await Promise.all(
+        cacheKeys
+          .filter((key) => {
+            const isSnapCompostCache =
+              key.startsWith('snapcompost-');
+
+            const isCurrentCache =
+              key === CACHE_PRECACHE ||
+              key === CACHE_RUNTIME;
+
+            return isSnapCompostCache && !isCurrentCache;
+          })
+          .map((key) => caches.delete(key)),
+      );
+
+      // Kendalikan halaman yang sudah terbuka.
+      await self.clients.claim();
+    })(),
+  );
 });
 
+// ================================================================
+// FETCH HANDLER
+// ================================================================
+
 self.addEventListener('fetch', (event) => {
-  const req = event.request;
+  const request = event.request;
 
-  // 1) Hanya tangani GET. POST/PUT/PATCH/DELETE → lewati ke jaringan.
-  if (req.method !== 'GET') return;
-
-  // 2) Lewati request cross-origin ke backend (Supabase/Firebase) atau URL dengan param auth.
-  if (lewati(req)) return;
-
-  // 3) Request non-http(s) (chrome-extension:, data:, blob:, file:) → lewati.
-  const url = new URL(req.url);
-  if (!url.protocol.startsWith('http')) return;
-
-  // 4) Navigasi (HTML): network-first, fallback app shell offline.
-  if (req.mode === 'navigate') {
-    event.respondWith(networkFirst(req));
+  // Hanya request GET yang boleh ditangani cache.
+  if (request.method !== 'GET') {
     return;
   }
 
-  // 5) Aset statis (CSS/JS/ikon/font/model): stale-while-revalidate.
-  //    Model ONNX 43MB juga masuk sini → di-cache runtime sekali, lalu di-serve dari cache.
-  event.respondWith(swr(req));
+  // Lewati API, autentikasi, notifikasi dinamis,
+  // serta semua request cross-origin.
+  if (lewati(request)) {
+    return;
+  }
+
+  const url = new URL(request.url);
+
+  // Lewati protocol selain HTTP dan HTTPS.
+  if (url.protocol !== 'http:' && url.protocol !== 'https:') {
+    return;
+  }
+
+  // Navigasi HTML memakai network-first.
+  if (request.mode === 'navigate') {
+    event.respondWith(networkFirst(request));
+    return;
+  }
+
+  // Aset same-origin memakai stale-while-revalidate.
+  //
+  // Model ONNX akan dicache saat pertama kali diminta,
+  // bukan ketika service worker dipasang.
+  event.respondWith(staleWhileRevalidate(request));
 });
 
-// Pesan dari halaman: "SKIP_WAITING" agar update SW langsung aktif tanpa refresh ganda.
+// ================================================================
+// MESSAGE HANDLER
+// ================================================================
+
 self.addEventListener('message', (event) => {
-  if (event.data === 'SKIP_WAITING') self.skipWaiting();
+  if (event.data === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
 });
