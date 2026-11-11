@@ -1,7 +1,7 @@
 /* Halaman Profil Anda. Header & tombol back memakai kelas .workflow-header / .workflow-back agar senada dengan halaman lain. */
 
 /* Saat Profil terbuka, semua anak .phone lain disembunyikan (cara yang sama dengan layar login). */
-.phone[data-screen="profil"] > :not(.profile-view):not(.confirm-layer):not(.loading-layer):not(.toast):not(.home-indicator) {
+.phone[data-screen="profil"] > :not(.profile-view):not(.confirm-layer):not(.loading-layer):not(.toast) {
   display: none !important;
 }
 
@@ -17,6 +17,30 @@
 
 .profile-view[hidden] {
   display: none;
+}
+
+/* Header Profil: disamakan dengan header Hasil Deteksi (background putih, judul & tombol kembali lebih besar) */
+.profile-view .workflow-header {
+  min-height: 56px;
+  flex-basis: 56px;
+  padding: 0 20px;
+  border-bottom: 1px solid #e8f5ee;
+  background: rgba(255, 255, 255, .9);
+}
+
+.profile-view .workflow-header h2 {
+  font-size: 18px;
+}
+
+.profile-view .workflow-back {
+  width: 38px;
+  height: 38px;
+  flex-basis: 38px;
+}
+
+.profile-view .workflow-back svg {
+  width: 20px;
+  height: 20px;
 }
 
 .profile-body {
@@ -94,7 +118,7 @@
 }
 
 .profile-actions {
-  padding: 12px 19px 34px;  /* ruang untuk home-indicator */
+  padding: 12px 19px 34px;  /* ruang bawah */
 }
 
 .profile-logout {
